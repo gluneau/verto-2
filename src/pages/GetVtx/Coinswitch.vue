@@ -130,7 +130,37 @@
                 </q-step>
                 <q-step :name="4" title="Submit" class="bg-black workflow-step" :done="step>4">
 
-                    <div class="q-pa-sm text-center" v-show="true" @click="$refs.stepper.next()">
+                   <q-inner-loading :showing="submitSpinnervisible">
+                        <q-spinner-gears size="50px" color="black" />
+                    </q-inner-loading>
+                    Does the steps of the submit or something.
+
+                    <div v-show="hasError" class="text-h6 text-uppercase text-red q-pa-md">
+                        {{ errorMessage }}
+                    </div>
+
+                    <div v-show="mustWait" class="text-h6 text-uppercase text-red q-pa-md">
+                    {{ $t('RequestNativeChainAddress.time_remaining_info') }}
+                    <countdown :time="timeremaining" :transform="transform" >
+                        <template slot-scope="props">
+                        <div >
+                            <span v-if="props.totalHours > 0" class="timestandard"
+                            >{{ props.hours }}:</span>
+                            <span v-if="props.totalMinutes > 0"
+                            v-bind:class="{ timestandard:  props.totalMinutes > 0, minutesleft: props.totalHours <= 0 }"
+                            >
+                            {{ props.minutes }}:
+                            </span>
+                            <span
+                            v-bind:class="{ timestandard:  props.totalMinutes > 0, secondsleft:  props.totalMinutes <= 0, minutesleft: props.totalHours <= 0 }"
+                            >
+                            {{ props.seconds }}
+                            </span>
+                        </div>
+                        </template>
+                    </countdown>
+                    </div>
+                    <div class="q-pa-sm text-center" v-show="!submitSpinnervisible && showSubmit" @click="submit()">
                         <q-icon name="navigate_next" size="3.2rem" color="green"   >
                         <q-tooltip>{{ $t('next') }}</q-tooltip>
                         </q-icon>
@@ -170,7 +200,13 @@ export default {
       spinnervisible: false,
       returnAddress: '',
       returnMemo: '',
-      nativeCurrencyAmount: 0
+      nativeCurrencyAmount: 0,
+      submitSpinnervisible: false,
+      hasError: false,
+      errorMessage: '',
+      mustWait: false,
+      timeremaining: 0,
+      showSubmit: true
     }
   },
   mounted () {
@@ -183,6 +219,49 @@ export default {
     })
   },
   methods: {
+    transform (props) {
+      Object.entries(props).forEach(([key, value]) => {
+        if (key === 'totalSeconds' && value <= 1) {
+          this.errors.mustWait = false
+          this.showSubmit = true
+        }
+        let digits = value < 10 ? `0${value}` : value
+        props[key] = `${digits}`
+      })
+      return props
+    },
+    async submit () {
+      console.log('Submitting')
+      console.log(JSON.stringify(this.depositCoin, null, 4))
+      // TODO: Enable the spinner and disable the button.
+      this.hasError = false
+      this.errorMessage = ''
+      this.submitSpinnervisible = true
+      let hashResult = await this.$axios.post(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/initiate-transaction/', {
+        verto_public_address: this.$store.state.currentwallet.wallet.key,
+        currency: 'btc'
+      })
+      const res = await hashResult
+      if (res.data.success) {
+        this.$router.push({ name: 'begin-get-vtx' })
+      } else {
+        if (res.data.error_code === 'no_address_available') {
+          this.hasError = true
+          this.errorMessage = 'No Address Currently Available. Please Try Again Later'
+        } else if (res.data.error_code === 'pending_transactions_exist') {
+          this.showSubmit = false
+          this.hasError = true
+          this.errorMessage = 'You Have A Pending Transaction'
+        } else if (res.data.error_code === 'investor_must_wait') {
+          const waitUntil = res.data.data.next_available_time
+          const serverTime = res.data.data.server_time
+          this.timeremaining = Date.parse(waitUntil) - Date.parse(serverTime)
+          this.mustWait = true
+          this.showSubmit = false
+        }
+      }
+      this.submitSpinnervisible = false
+    },
     getBtcPairs (coins) {
       // console.log(JSON.stringify(coins, null, 4))
       console.log(JSON.stringify())
@@ -230,5 +309,22 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.vtxamount {
+  font-size: 1.5em;
+}
+.timestandard {
+  font-size: 1.5em;
+}
+.minutesleft {
+  color: red;
+  font-size: 2.5em;
+}
+.secondsleft {
+  color: red;
+  font-size: 5em;
+}
+.modal-content .q-icon {
+  cursor: pointer
+}
 </style>
