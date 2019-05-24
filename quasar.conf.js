@@ -32,6 +32,7 @@ module.exports = function (ctx) {
       components: [
         'QAvatar',
         'QInnerLoading',
+        'QSpinnerGears',
         'QBtn',
         'QCard',
         'QCardSection',
