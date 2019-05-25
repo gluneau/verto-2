@@ -71,14 +71,6 @@
                             <q-item-label >Provide A Return Address In Event Of Error</q-item-label>
                         </q-item>
                     </div>
-                    <div class="q-py-sm text-uppercase">
-                        <q-item class="items-center">
-                            <q-item-section  class="col-auto q-mr-md">
-                            <q-chip dense color="green"  class="shadow-1">&nbsp;</q-chip>
-                            </q-item-section>
-                            <q-item-label >Add A Memo</q-item-label>
-                        </q-item>
-                    </div>
                     <div class="q-py-xs">
                         <q-input
                             v-model="returnAddress"
@@ -86,16 +78,6 @@
                             dark
                             color="green"
                             label="Return Address"
-                        />
-                    </div>
-                    <br>
-                    <div class="q-py-xs">
-                        <q-input
-                            v-model="returnMemo"
-                            type="text"
-                            dark
-                            color="green"
-                            label="(Optional) Return Memo"
                         />
                     </div>
                     <div class="q-pa-sm text-center" v-show="returnAddress" @click="$refs.stepper.next()">
@@ -199,7 +181,6 @@ export default {
       depositCoin: '',
       spinnervisible: false,
       returnAddress: '',
-      returnMemo: '',
       nativeCurrencyAmount: 0,
       submitSpinnervisible: false,
       hasError: false,
