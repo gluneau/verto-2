@@ -230,10 +230,7 @@ export default {
       })
       return props
     },
-    async submit () {
-      console.log('Submitting')
-      console.log(JSON.stringify(this.depositCoin, null, 4))
-      // TODO: Enable the spinner and disable the button.
+    async allocateBtc () {
       this.hasError = false
       this.errorMessage = ''
       this.submitSpinnervisible = true
@@ -261,6 +258,24 @@ export default {
         }
       }
       this.submitSpinnervisible = false
+    },
+    async allocateNonBtc () {
+      console.log('** Needs to call the crowdfund server as that is where the BTC address will be added to the Coinswitch request.')
+      console.log('** The BTC stuff needs to be on the server else anyone will be able to replace theirs with ours. In this way, we will be able to ensure that the transation makes it to the right place.')
+      console.log('** Also need to think about how we will be giving the user status on the transactions themselves.')
+    },
+    async submit () {
+      console.log('Submitting')
+      console.log(JSON.stringify(this.depositCoin, null, 4))
+      if (this.depositCoin.value === 'btc') {
+        this.allocateBtc()
+      } else {
+        this.allocateNonBtc()
+      }
+      // TODO: Enable the spinner and disable the button.
+      /*
+
+      */
     },
     getBtcPairs (coins) {
       // console.log(JSON.stringify(coins, null, 4))
