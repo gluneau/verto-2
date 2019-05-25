@@ -348,6 +348,7 @@ export default {
   created () {
   },
   mounted () {
+    console.log(process.env[store.state.settings.network].COINSWITCH_APIKEY)
     const self = this
     this.$axios.get(url + '/v2/coins', { headers }).then(function (result) {
       console.log('coins results:', result.data)

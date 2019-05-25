@@ -30,6 +30,15 @@ export default [
         }
       },
       {
+        name: 'coinswitch-get-vtx',
+        path: 'coinswitch-get-vtx',
+        component: () => import('pages/GetVtx/Coinswitch.vue'),
+        meta: {
+          authRequired: true,
+          needskeyscreated: true
+        }
+      },
+      {
         name: 'summary-vtx',
         path: 'summary-vtx',
         component: () => import('pages/GetVtx/Summary.vue'),

@@ -90,7 +90,6 @@ export default {
     return {
       contractable: true,
       currency: 'BTC',
-      showModal: false,
       showInvsetorMustWait: false,
       timeremaining: 0,
       pendingTransactionsExist: false,
@@ -134,7 +133,6 @@ export default {
       return props
     },
     async submit () {
-      this.showModal = false
       this.errors.noAddress = false
       this.showInvsetorMustWait = false
       let hashResult = await axios.post(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/initiate-transaction/', {
