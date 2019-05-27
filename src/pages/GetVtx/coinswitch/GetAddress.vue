@@ -6,7 +6,7 @@
             <q-tooltip>{{ $t('SettingsView.help') }}</q-tooltip>
             </q-icon>
             <big class="titillium q-pa-xl">Get VTX With Crypto</big>
-            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('wallet')"/>
+            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('cs-get-vtx-transactions')"/>
         </q-card-section>
         </q-card>
         <q-card flat class="bg-black" style="width: 100%; max-width: 750px;">
@@ -196,6 +196,17 @@ export default {
     this.$axios.get(url + '/v2/coins', { headers }).then(function (result) {
       // will be using this coins array later with the destination select
       self.coins = result.data.data
+      // console.log(JSON.stringify(self.coins, null, 4))
+      const printList = []
+      let i
+      for (i in self.coins) {
+        printList.push({
+          name: self.coins[i].name,
+          symbol: self.coins[i].symbol,
+          logoUrl: self.coins[i].logoUrl
+        })
+      }
+      console.log(JSON.stringify(printList, null, 2))
       self.getBtcPairs(result.data.data)
     })
   },
@@ -246,8 +257,6 @@ export default {
       console.log('** Also need to think about how we will be giving the user status on the transactions themselves.')
     },
     async submit () {
-      console.log('Submitting')
-      console.log(JSON.stringify(this.depositCoin, null, 4))
       if (this.depositCoin.value === 'btc') {
         this.allocateBtc()
       } else {
@@ -259,8 +268,6 @@ export default {
       */
     },
     getBtcPairs (coins) {
-      // console.log(JSON.stringify(coins, null, 4))
-      console.log(JSON.stringify())
       const self = this
       this.$axios.post(url + '/v2/pairs',
         {
@@ -268,10 +275,7 @@ export default {
         },
         { headers })
         .then((response) => {
-          const btcCoin = self.coins.filter(c => c.symbol === 'btc')[0]
-          console.log('1. ' + JSON.stringify(btcCoin, null, 4))
           response.data.data.push({ depositCoin: 'btc', destinationCoin: 'btc', isActive: true })
-          console.log('2. ' + JSON.stringify(response.data.data[0]))
 
           self.depositCoinOptions = response.data.data.map(function (coin) {
             if (coin.isActive === true) {

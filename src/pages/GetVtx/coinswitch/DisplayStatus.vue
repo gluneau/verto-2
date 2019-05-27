@@ -1,43 +1,5 @@
 <template>
   <div class="layout-padding">
-    <q-dialog v-model="showErrorModal" minimized>
-      <div style="max-width: 400px;">
-        <q-btn icon="close" class="modal-close-button" dense flat round @click="showErrorModal = false" style="top: 16px;" />
-        <div class="q-pa-md">
-          <div class="row q-mb-lg q-pr-lg">
-            <div class="col text-h5">
-              {{modalMessages}}
-            </div>
-          </div>
-          <br>
-          <div class="col ">
-            {{ $t('BeginGetVtx.approval') }}
-          </div>
-          <br>
-          <div class="col-auto text-center">
-            <q-btn outline :label="$t('BeginGetVtx.go_to_wallet')" to="wallet" />
-          </div>
-        </div>
-      </div>
-    </q-dialog>
-    <q-dialog v-model="blocktopusModal" ref="modalRef">
-      <q-card class="q-pa-lg">
-        <q-icon class="float-right" name="close" size="1.5rem" color="black" @click.native="blocktopusModal = !blocktopusModal"/>
-        <q-card-section>
-          <div class="text-h5 q-mb-md">{{ $t('BeginGetVtx.not_whitelisted') }}</div>
-        </q-card-section>
-        <q-separator />
-        <br>
-        <div class="col ">
-          {{ $t('BeginGetVtx.register_message') }}
-        </div>
-        <br>
-        <div class="q-mt-md q-mb-xl">
-          <q-btn class="float-center q-mr-sm" color="grey-9" v-close-popup size="md" :label="$t('AssociateView.create')" to="/blocktopusCreate" />
-          <q-btn class="float-right" outline color="primary" v-close-popup size="md" :label="$t('AssociateView.login')" to="/blocktopusAssociate" />
-        </div>
-      </q-card>
-    </q-dialog>
     <q-page class="column flex-center text-white bg-black  text-white" v-show="b8sOrZixiModal">
       <q-card flat class="bg-black" style="width: 100%; max-width: 550px;">
         <q-card-section class="text-weight-bold text-center text-uppercase">
