@@ -158,14 +158,7 @@ import store from '@/store'
 import { userError } from '@/util/errorHandler'
 
 // TODO: Talk about this... no need for the PROXY
-let url = ''
-if (process.env.PROD) {
-  url = 'https://api.coinswitch.co'
-} else {
-  // Install this https://www.npmjs.com/package/local-cors-proxy
-  console.log('DO NOT forget to install https://www.npmjs.com/package/local-cors-proxy for local dev work')
-  url = 'http://localhost:8010/proxy'
-}
+let url = process.env[store.state.settings.network].COINSWITCH_URL
 
 const headers = {
   'x-api-key': process.env[store.state.settings.network].COINSWITCH_APIKEY

@@ -39,6 +39,15 @@ export default [
         }
       },
       {
+        name: 'coinswitch-status',
+        path: 'coinswitch-status',
+        component: () => import('pages/GetVtx/coinswitch/Status.vue'),
+        meta: {
+          authRequired: true,
+          needskeyscreated: true
+        }
+      },
+      {
         name: 'summary-vtx',
         path: 'summary-vtx',
         component: () => import('pages/GetVtx/Summary.vue'),

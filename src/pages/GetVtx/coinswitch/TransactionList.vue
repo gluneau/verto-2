@@ -22,7 +22,13 @@
                         Transaction STAtUS
                     </div>
                     <div class="col-4">
-                    <q-select dark separator v-model="status" :options="statuses" />
+                    <q-select
+                      dark
+                      separator
+                      v-model="status"
+                      :options="statuses"
+                      @input="refreshContent"
+                    />
                     </div>
                 </div>
             </div>
@@ -33,7 +39,12 @@
             :columns="columns"
             row-key="key"
             >
-                <q-tr  :id="props.row.id" slot="body" slot-scope="props" :props="props" class="cursor-pointer">
+                <q-tr
+                  :id="props.row.id"
+                  slot="body"
+                  slot-scope="props"
+                  :props="props" class="cursor-pointer"
+                  @click.native="showRowStatus(props.row)">
                     <q-td
                         v-for="col in props.cols"
                         :key="col.name"
@@ -46,15 +57,15 @@
                         />
                         </div>
                         <div v-if="col.name === 'token_name'" class="text-center text-white">
-                        <big>{{ col.value }}</big>
-                        </div>
-                        <div v-if="col.name === 'created'" class="text-center text-white">
-                        <div class="">
-                      {{ col.value  | formatDate }}
-                    </div>
-                    <div class="text-h6">
-                      {{ col.value  | formatTime }}
-                    </div>
+                          <big>{{ col.value }}</big>
+                          </div>
+                          <div v-if="col.name === 'created'" class="text-center text-white">
+                          <div class="">
+                            {{ col.value  | formatDate }}
+                          </div>
+                          <div class="text-h6">
+                            {{ col.value  | formatTime }}
+                          </div>
                         </div>
                     </q-td>
                 </q-tr>
@@ -64,13 +75,13 @@
 </template>
 
 <script>
-
+import { userError } from '@/util/errorHandler'
 import imageUrls from './currencyImageUrls.json'
 
 export default {
   data () {
     return {
-      status: 'open',
+      status: null,
       tableData: [],
       dark: true,
       columns: [
@@ -124,12 +135,32 @@ export default {
     this.getTransactionHistory()
   },
   methods: {
+    showRowStatus (row) {
+      this.$router.push(
+        '/coinswitch-status?' +
+        'order_id=' + row.order_id +
+        '&create_time=' + row.create_time
+      )
+    },
+    async refreshContent () {
+      console.log('REFRESHIG:::: ' + JSON.stringify(this.status))
+      this.getTransactionHistory()
+    },
     async getTransactionHistory () {
-      const url = process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/coinswitch-transaction-list?verto_public_address=' + this.$store.state.currentwallet.wallet.key
+      // &status= this.status
+      let url = process.env[this.$store.state.settings.network]
+        .CROWDFUND_URL +
+        '/public/api/coinswitch-transaction-list?verto_public_address=' +
+        this.$store.state.currentwallet.wallet.key
+      if (this.status) {
+        url += '&status=' + this.status.value
+      }
+      console.log(url)
       let results = await this.$axios.get(url)
       this.tableData = results.data.data
       if (!results.data.success) {
         // TODO: Error message
+        userError('Error retreiving the transactions from the server.')
         return
       }
       let i
