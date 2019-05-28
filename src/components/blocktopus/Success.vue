@@ -1,41 +1,45 @@
 <template>
-  <q-page class="flex flex-center text-white bg-black" >
-  <div class="fixed-center text-center bg-primary q-pa-lg" style="max-width: 700px; margin: 0 auto; ">
-    <q-card-section class="text-weight-bold text-center text-uppercase">
-      <big class="titillium q-pa-lg">Update Config</big>
-      <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('/associations')"/>
-    </q-card-section>
-    <q-stepper done-color="green" active-color="green" ref="stepper" alternative-labels :contractable="contractable">
-        <q-step default name="first" title="Verto Password" class=" bg-black workflow-step">
-          <q-card-section class="text-center text-white"  >
-            <q-field
-        >
-            <q-input
-              type="password"
-              dark
-              v-model="password"
-              @input="checkPassword"
-              @keyup.enter="submit"
-              color="green"
-              v-bind:label="$t('ChangeVertoPassword.current')"
-            />
-        </q-field>
-        <div v-show="badPassword" class="text-h6 text-uppercase text-red  q-pa-md">
-          {{ $t('SaveToFile.password_incorrect') }}
-        </div>
-        <div v-show="unknownError" class="text-h6 text-uppercase text-red  q-pa-md  text-center">
-          Unkown Error
-        </div>
-        <div class="q-pa-md text-center" v-show="submitBtn" @click="submit" >
-          <q-icon name="navigate_next" size="3.2rem" color="green"   >
-            <q-tooltip>{{ $t('WalletManager.submit') }}</q-tooltip>
-          </q-icon>
-        </div>
-          </q-card-section>
-        </q-step>
-    </q-stepper>
-  </div>
+  <div class="layout-padding">
+    <q-page class="column flex-center text-white bg-black  text-white">
+      <q-card flat class="bg-black" style="width: 100%; max-width: 750px;">
+        <q-card-section class="text-weight-bold text-center text-uppercase">
+            <q-tooltip>{{ $t('SettingsView.help') }}</q-tooltip>
+            <big class="titillium q-pa-xl">Update Config</big>
+            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('/associations')"/>
+        </q-card-section>
+      </q-card>
+      <q-card flat class="bg-black" style="width: 100%; max-width: 750px;">
+        <q-stepper v-model="step" done-color="green" active-color="green" ref="stepper" alternative-labels >
+          <q-step :name="1" title="Currency" class="bg-black workflow-step" :done="step>1">
+            <q-card-section class="text-center text-white"  >
+              <div class="q-pa-md text-center">
+                  <q-input
+                    type="password"
+                    dark
+                    v-model="password"
+                    @input="checkPassword"
+                    @keyup.enter="submit"
+                    color="green"
+                    v-bind:label="$t('ChangeVertoPassword.current')"
+                  />
+              </div>
+              <div v-show="badPassword" class="text-h6 text-uppercase text-red  q-pa-md">
+                {{ $t('SaveToFile.password_incorrect') }}
+              </div>
+              <div v-show="unknownError" class="text-h6 text-uppercase text-red  q-pa-md  text-center">
+                Unkown Error
+              </div>
+              <div class="q-pa-md text-center" v-show="submitBtn" @click="submit" >
+                <q-icon name="navigate_next" size="3.2rem" color="green"   >
+                  <q-tooltip>{{ $t('WalletManager.submit') }}</q-tooltip>
+                </q-icon>
+              </div>
+            </q-card-section>
+          </q-step>
+        </q-stepper>
+      </q-card>
   </q-page>
+  </div>
 </template>
 
 <script>
@@ -46,6 +50,7 @@ export default {
   data () {
     return {
       password: '',
+      step: 1,
       submitBtn: false,
       passHasError: false,
       modal: false,

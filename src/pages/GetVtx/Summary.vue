@@ -9,7 +9,19 @@
           <big class="titillium q-pa-md">VTX TOKEN DISTRIBUTION</big>
           <q-icon class="" name="close" size="2.5rem" color="white" @click.native="$router.push('/wallet')"/>
         </div>
-        <div class="row">
+        <!--
+
+        -->
+        <div class="row ">
+            <span class="col text-center">
+              <span class="text-h2 text-green">
+                {{ data.usd_price }}
+              </span>
+              USD / VTX
+            </span>
+          </div>
+
+        <div class="row q-pa-md">
           <span class="col text-center text-uppercase">
             ROUND
             <span class="text-h3">
@@ -17,8 +29,6 @@
             </span>
             ends in
           </span>
-        </div>
-        <div class="row q-pa-md">
           <span class="col text-center">
             <div class="text-h4">
               <div class="col-6  text-h3">
@@ -38,148 +48,143 @@
             </div>
           </span>
         </div>
-        <div class="float-center q-pa-sm" v-show='!venueIsAssociated'>
-           <div class="q-pa-md" style='border-style: solid;'>
-            <div class="text-h4">
-              Venue
-            </div>
-            <div  class="q-pa-sm">
-              Associate this wallet with Venue!
-            </div>
-            <div class="q-pa-sm">
-              <q-btn class=" q-mr-sm" outline color="white" v-close-popup size="md" label="Yes" to="/associations" />
-            </div>
+
+        <div class="row q-pa-md">
+          <div class="col-6 text-center">
+              <span class="text-h4">
+                {{ data.crowdsale.total_claimed | numFormat }}
+              </span>
+              CLAIMED
+          </div>
+          <div class="col-6 text-center">
+              <span class="text-h4">
+              {{ data.crowdsale.maximum_allocation - data.crowdsale.total_claimed | numFormat}}
+            </span>
+            REMAINING
           </div>
         </div>
+
       </q-card-section>
-      <q-card-section v-if="data.current_round" class="text-center text-white">
-        <div>
-          <div v-if="walletStatus === 'crowdfund_over'" class="text-h2 animate-blink text-red q-pa-sm" style='border-style: solid;'>
-            {{ $t('BeginGetVtx.paused') }}
-          </div>
-          <div v-show="walletStatus != 'crowdfund_over'">
-            <div v-show="showGetVTX" class="q-pa-md" style='border-style: solid;'>
+
+      <q-card-section class="text-weight-bold text-white text-center text-uppercase">
+
+        <!--
+                STATUS!!!!!!
+        -->
+        <div style='border-style: solid;  border-width: 0.1em'>
+          <div v-show="walletStatus === 'purchase_not_allowed'">
+            <div  class="q-pa-md text-h6 text-uppercase">
               <div class="text-h4">
-                Get VTX
+              Awaiting Investor Approval
               </div>
-              <div v-show="walletStatus === 'wallet_not_allocated'">
-                <div  class="q-pa-sm">
-                  Allocate an address for 15 mins. One address allocation per hour.
-                </div>
-                <div class="q-pa-sm">
-                  <q-btn color="yellow" outline rounded dense style="min-width: 150px;" @click="$router.push({path: 'begin-get-vtx'})">Contribute</q-btn>
-                </div>
+              <q-tooltip v-model="showingTooltip.awaiting" content-style="font-size: 16px">
+                You will be notified by Blocktopus upon successful completion of the process.
+              </q-tooltip>
+              <q-icon class="" name="help_outline" size="1.5rem" color="white" @click.native="showingTooltip.awaiting != showingTooltip.awaiting">
+              </q-icon>
+            </div>
+          </div>
+          <div v-show="walletStatus === 'wallet_not_whitelisted'">
+            <div  class="q-pa-md text-h6 text-uppercase">
+              <div class="text-h4">
+              {{ $t('BeginGetVtx.not_whitelisted') }}
               </div>
-              <div v-show="walletStatus === 'wallet_allocated'">
-                <div  class="q-pa-sm">
-                  Your temporary address is still available.
-                </div>
-                <div class="q-pa-sm">
-                  <q-btn color="yellow" outline rounded dense style="min-width: 150px;" @click="$router.push({path: 'begin-get-vtx'})">Contribute</q-btn>
-                </div>
-              </div>
-              <div v-show="walletStatus === 'wallet_not_whitelisted'">
-                <div  class="q-pa-md text-h6 text-uppercase">
-                  {{ $t('BeginGetVtx.not_whitelisted') }}
-                </div>
-                <div class="col">
+              <q-tooltip v-model="showingTooltip.notRegistered" content-style="font-size: 16px">
                   {{ $t('BeginGetVtx.register_message') }}
-                </div>
+              </q-tooltip>
+              <q-icon class="" name="help_outline" size="1.5rem" color="white" @click.native="showingTooltip.notRegistered != showingTooltip.notRegistered">
+              </q-icon>
+
                 <div class="q-mt-md q-mb-md">
                   <q-btn class=" q-mr-sm" outline color="white" v-close-popup size="md" :label="$t('WalletManager.associations')" to="/associations" />
                 </div>
+            </div>
+          </div>
+
+          <div v-show="walletStatus === 'waiting_for_kyc'">
+            <div  class="q-pa-md text-h6 text-uppercase">
+              <div class="text-h4">
+              Awaiting KYC Approval
               </div>
-              <div v-show="walletStatus === 'waiting_for_kyc'">
-                <div  class="q-pa-md text-h6 text-uppercase">
-                  Awaiting KYC Approval
-                </div>
+              <q-tooltip v-model="showingTooltip.waiting_kyc" content-style="font-size: 16px">
                 You will be notified by Blocktopus upon successful completion of the process.
+              </q-tooltip>
+              <q-icon class="" name="help_outline" size="1.5rem" color="white" @click.native="showingTooltip.waiting_kyc != showingTooltip.waiting_kyc">
+              </q-icon>
+            </div>
+          </div>
+
+          <div v-show="walletStatus === 'wallet_not_allocated' || walletStatus === 'wallet_allocated'">
+            <div class="q-pa-lg row">
+              <div class='col-6'>
+                <q-btn color="green" outline  dense style="min-width: 150px;" @click="$router.push({path: 'coinswitch-get-vtx'})">Contribute With Crypto</q-btn>
               </div>
-              <div v-show="walletStatus === 'purchase_not_allowed'">
-                <div  class="q-pa-md text-h6 text-uppercase">
-                  Awaiting Investor Approval
+              <div class='col-6'>
+                <q-btn color="green" outline  dense style="min-width: 150px;" @click="$router.push({path: 'zixipay-get-vtx'})">Contribute With FIAT</q-btn>
+              </div>
+            </div>
+          </div>
+          <div v-if="walletStatus === 'crowdfund_over'" class="text-h2 animate-blink text-red q-pa-sm" style='border-style: solid;'>
+            {{ $t('BeginGetVtx.paused') }}
+          </div>
+        <div class="text-center text-weight-bold text-uppercase q-pa-lg">
+                <div class="q-pa-sm row">
+                    <div class="col-6 uppercase">
+                        Transaction STAtUS
+                    </div>
+                    <div class="col-6">
+                    <q-select
+                      dark
+                      separator
+                      v-model="status"
+                      :options="statuses"
+                      @input="refreshContent"
+                    />
+                    </div>
                 </div>
-                You will be notified by Blocktopus upon successful completion of the process.
-              </div>
-              <!--
-              <div v-show="zixipayenabled" class=" q-pa-md">
-                <q-btn :disabled="true" color="green" outline rounded dense style="min-width: 150px;" @click="$router.push({path: 'zixipay'})">Zixipay</q-btn>
-              </div>
-              -->
+
+            <q-table
+            class="bg-black"
+            :dark='dark'
+            :data="tableData"
+            :columns="columns"
+            row-key="key"
+            >
+                <q-tr
+                  :id="props.row.id"
+                  slot="body"
+                  slot-scope="props"
+                  :props="props" class="cursor-pointer"
+                  @click.native="showRowStatus(props.row)">
+                    <q-td
+                        v-for="col in props.cols"
+                        :key="col.name"
+                        :props="props"
+                        >
+                        <div v-if="col.name === 'token_image'" class="text-center text-white">
+                        <img
+                            :src="col.value"
+                            style="max-width:50px;"
+                        />
+                        </div>
+                        <div v-if="col.name === 'token_name'" class="text-center text-white">
+                          <big>{{ col.value }}</big>
+                          </div>
+                          <div v-if="col.name === 'created'" class="text-center text-white">
+                          <div class="">
+                            {{ col.value  | formatDate }}
+                          </div>
+                          <div class="text-h6">
+                            {{ col.value  | formatTime }}
+                          </div>
+                        </div>
+                    </q-td>
+                </q-tr>
+            </q-table>
             </div>
-            <div v-if="walletStatus === 'current_phase_not_active'" style='border-style: solid;'>
-              <div  class="text-h4">
-                Awaiting Phase Activation
-              </div>
-              <div>
-                Please try again soon.
-              </div>
-            </div>
-          </div>
-          <div class="row q-pa-lg">
-            <span class="col text-center">
-              <span class="text-h4 text-yellow">
-                {{ data.current_price / 100000000 }}
-              </span>
-              BTC / VTX
-            </span>
-          </div>
-          <div class="row">
-            <div class="col">
-            <div>
-              <q-linear-progress :value="progress/100" stripe animate dark style="height: 15px" track-color="positive" color="positive"/>
-            </div>
-            <div class="text-left">
-              <span class="float-right">
-                {{ data.crowdsale.maximum_allocation }} VTX
-              </span>
-            </div>
-            </div>
-          </div>
-          <div class="row q-pa-md">
-            <div class="col">
-              <div>
-                <span class="text-h4">
-                  {{ data.crowdsale.total_claimed | numFormat }}
-                </span>
-                CLAIMED
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div>
-                <span class="text-h4">
-                  {{ data.crowdsale.maximum_allocation - data.crowdsale.total_claimed | numFormat}}
-                </span>
-                REMAINING
-              </div>
-            </div>
-          </div>
         </div>
-        <br>
       </q-card-section>
     </q-card>
-    <q-dialog v-model="passwordModal" minimized ref="modalRef">
-      <div style="padding: 50px" class="text-center bg-black text-white">
-        <div class="text-h4 q-mb-md">Verto Password</div>
-        <div class="q-pa-sm">
-          <q-field
-              dark
-              :error="vertoPasswordEmpty"
-              v-bind:error-label="$t('Welcome.incorrect')"
-              :count="100"
-            >
-            <q-input dark type="password" v-model="vertopassword" :error="vertoPasswordEmpty" color="blue" v-bind:label="$t('CreateVertoPassword.vertopassword')"  />
-            </q-field>
-        </div>
-        <div class="q-pa-sm">
-          <div>
-            <q-btn dark color='white' outline @click="removeVenueOption">OK</q-btn>
-          </div>
-        </div>
-      </div>
-    </q-dialog>
   </q-page>
 </template>
 
@@ -190,6 +195,7 @@ import getVtxHelper from '../../util/GetVtxHelper'
 import Vue from 'vue'
 import numFormat from 'vue-filter-number-format'
 import configManager from '../../util/ConfigManager'
+import imageUrls from './coinswitch/currencyImageUrls.json'
 
 Vue.filter('numFormat', numFormat)
 
@@ -200,10 +206,12 @@ export default {
       spinnervisible: false,
       progress: 0,
       progressBuffer: 41,
-      vertoPasswordEmpty: false,
-      passwordModal: false,
-      zixipayenabled: false,
       vertopassword: '',
+      showingTooltip: {
+        notRegistered: false,
+        awaiting: false,
+        waiting_kyc: false
+      },
       buffer: 17,
       data: {
         crowdsale: {},
@@ -214,45 +222,111 @@ export default {
       venueIsAssociated: false,
       walletName: '',
       round: 0,
-      showGetVTX: false
+      showGetVTX: false,
+      status: 'open',
+      tableData: [],
+      dark: true,
+      columns: [
+        {
+          name: 'token_image',
+          label: '',
+          required: false,
+          align: 'center',
+          field: 'logoUrl',
+          sortable: false,
+          classes: 'text-h6'
+        }, {
+          name: 'token_name',
+          label: 'Deposit Token',
+          required: true,
+          align: 'center',
+          field: 'name',
+          sortable: false,
+          classes: 'my-class'
+        }, {
+          name: 'created',
+          label: 'Created',
+          required: true,
+          align: 'center',
+          field: 'create_time',
+          sortable: false,
+          classes: 'my-class'
+        }
+      ],
+      statuses: [
+        {
+          label: 'Open',
+          value: 'open'
+        },
+        {
+          label: 'Complete',
+          value: 'complete'
+        },
+        {
+          label: 'Verified',
+          value: 'verified'
+        },
+        {
+          label: 'Fail',
+          value: 'fail'
+        }
+      ]
     }
   },
   components: {
     countdown: countdown
   },
   mounted () {
-    if (!this.$store.state.currentwallet.wallet.associations) {
-      this.$router.push({ path: 'associations' })
-    } else {
-      const self = this
-      this.walletName = this.$store.state.currentwallet.wallet.name
-      this.setUpWalletStatus()
-      this.venueIsAssociated = configManager.checkIfAssociatedWithVenue()
-      this.$axios.get(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/summary/').then(function (result) {
-        self.data = result.data
-        self.calculateValues()
-      }).catch(() => {
-        userError('There was a problem reaching the server')
-      })
-    }
+    const self = this
+    this.walletName = this.$store.state.currentwallet.wallet.name
+    this.setUpWalletStatus()
+    this.venueIsAssociated = configManager.checkIfAssociatedWithVenue()
+    this.$axios.get(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/summary/').then(function (result) {
+      self.data = result.data
+      self.calculateValues()
+    }).catch(() => {
+      userError('There was a problem reaching the server')
+    })
+    this.getTransactionHistory()
   },
   methods: {
-    removeVenueOption () {
-      const self = this
-      this.$configManager.addAssociationToWallet(self.$store.state.currentwallet.wallet.key, this.vertopassword, 'Venue', {})
-        .then(function (result) {
-          if (result.success) {
-            self.venueIsAssociated = configManager.checkIfAssociatedWithVenue()
-            self.passwordModal = false
-          } else {
-            self.vertoPasswordEmpty = true
-          }
-        }).catch(function (err) {
-          if (err) {
-            // TODO: Exception handling
-          }
-          self.vertoPasswordEmpty = true
-        })
+    showRowStatus (row) {
+      this.$router.push(
+        '/coinswitch-status?' +
+        'order_id=' + row.order_id +
+        '&create_time=' + row.create_time
+      )
+    },
+    async refreshContent () {
+      console.log('REFRESHIG:::: ' + JSON.stringify(this.status))
+      this.getTransactionHistory()
+    },
+    async getTransactionHistory () {
+      // &status= this.status
+      let url = process.env[this.$store.state.settings.network]
+        .CROWDFUND_URL +
+        '/public/api/coinswitch-transaction-list?verto_public_address=' +
+        this.$store.state.currentwallet.wallet.key
+      if (this.status) {
+        url += '&status=' + this.status.value
+      }
+      console.log(url)
+      let results = await this.$axios.get(url)
+      this.tableData = results.data.data
+      if (!results.data.success) {
+        // TODO: Error message
+        userError('Error retreiving the transactions from the server.')
+        return
+      }
+      let i
+      for (i in this.tableData) {
+        const coinInList = imageUrls.filter(c => c.symbol === this.tableData[i].deposit_coin)[0]
+        if (coinInList) {
+          this.tableData[i]['logoUrl'] = coinInList.logoUrl
+          this.tableData[i]['name'] = coinInList.name
+        }
+      }
+      console.log(JSON.stringify(this.tableData, null, 4))
     },
     async calculateValues () {
       // smaller number by the larger number
@@ -278,16 +352,13 @@ export default {
     setUpWalletStatus () {
       const self = this
       getVtxHelper.getWalletStatus(this.$store.state.currentwallet.wallet.key, function (response) {
-        let status = response.message
-        if (status === 'wallet_not_whitelisted') {
+        let tempstatus = response.message
+        if (tempstatus === 'wallet_not_whitelisted') {
           if (configManager.checkIfAssociatedWithBlocktopus()) {
-            status = 'waiting_for_kyc'
+            tempstatus = 'waiting_for_kyc'
           }
         }
-        if (configManager.checkIfAssociatedWithZixipay()) {
-          self.zixipayenabled = true
-        }
-        self.walletStatus = status
+        self.walletStatus = tempstatus
         self.showGetVTX = false
         if (
           self.zixipayenabled ||

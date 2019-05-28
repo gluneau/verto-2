@@ -13,8 +13,70 @@
           <div class="text-center text-uppercase">
             <div v-show="orderInformation.status !== 'no_deposit'">
               <div class="col-6 text-h6 text-center q-pa-md">
-                    {{ statusDesc }}
-                </div>
+                  {{ statusDesc }}
+              </div>
+              <br>
+              <div v-show="crowdfundData.status === 'complete'">
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="green" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>Completed Currency Exchange</q-item-label>
+                </q-item>
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="red" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>VTX Conversion Complete</q-item-label>
+                </q-item>
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="red" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>VTX Sent</q-item-label>
+                </q-item>
+              </div>
+
+              <div v-show="crowdfundData.status === 'converted'">
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="green" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>Completed Currency Exchange</q-item-label>
+                </q-item>
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="green" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>VTX Conversion Complete</q-item-label>
+                </q-item>
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="red" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>VTX Sent</q-item-label>
+                </q-item>
+              </div>
+            <div v-show="crowdfundData.status === 'verified'">
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="green" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>Completed Currency Exchange</q-item-label>
+                </q-item>
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="green" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>VTX Conversion Complete</q-item-label>
+                </q-item>
+                <q-item class="items-center">
+                  <q-item-section class="col-auto q-mr-md">
+                    <q-chip dense color="green" class="shadow-1" >&nbsp;</q-chip>
+                  </q-item-section>
+                  <q-item-label>VTX Sent</q-item-label>
+                </q-item>
+              </div>
             </div>
             <div v-show="orderInformation.status === 'no_deposit'">
               <div class="row">
@@ -199,7 +261,7 @@ export default {
         },
         complete: {
           label: 'Complete',
-          desc: ':Destination Coin is successfully sent to the destination .'
+          desc: 'Exchange completed. Crowdfund is verifying the transacation before sending the VTX.'
         },
         failed: {
           label: 'Failed',
@@ -211,7 +273,7 @@ export default {
         },
         timeout: {
           label: 'Timeout',
-          desc: 'No deposit was detected for the order with in validity period.'
+          desc: 'The order request has timed out. You can create a new request at any time.'
         }
       }
       this.statusLabel = statusDict[this.orderInformation.status].label
