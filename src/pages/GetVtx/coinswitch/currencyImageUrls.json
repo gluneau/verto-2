@@ -1,0 +1,1227 @@
+[
+  {
+    "name": "Ripple",
+    "symbol": "xrp",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xrp.png"
+  },
+  {
+    "name": "Litecoin",
+    "symbol": "ltc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ltc.png"
+  },
+  {
+    "name": "TRON",
+    "symbol": "trx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/trx.png"
+  },
+  {
+    "name": "EOS",
+    "symbol": "eos",
+    "logoUrl": "https://files.coinswitch.co/public/coins/eos.png"
+  },
+  {
+    "name": "Verge",
+    "symbol": "xvg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xvg.png"
+  },
+  {
+    "name": "NEO",
+    "symbol": "neo",
+    "logoUrl": "https://files.coinswitch.co/public/coins/neo.png"
+  },
+  {
+    "name": "Bitcoin",
+    "symbol": "btc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/btc.png"
+  },
+  {
+    "name": "0x",
+    "symbol": "zrx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zrx.png"
+  },
+  {
+    "name": "Qtum",
+    "symbol": "qtum",
+    "logoUrl": "https://files.coinswitch.co/public/coins/qtum.png"
+  },
+  {
+    "name": "Zilliqa",
+    "symbol": "zil",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zil.png"
+  },
+  {
+    "name": "Ethereum",
+    "symbol": "eth",
+    "logoUrl": "https://files.coinswitch.co/public/coins/eth.png"
+  },
+  {
+    "name": "Ethereum Classic",
+    "symbol": "etc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/etc.png"
+  },
+  {
+    "name": "aelf",
+    "symbol": "elf",
+    "logoUrl": "https://files.coinswitch.co/public/coins/elf.png"
+  },
+  {
+    "name": "Ontology",
+    "symbol": "ont",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ont.png"
+  },
+  {
+    "name": "AdEx",
+    "symbol": "adx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/adx.png"
+  },
+  {
+    "name": "Aragon",
+    "symbol": "ant",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ant.png"
+  },
+  {
+    "name": "Ark",
+    "symbol": "ark",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ark.png"
+  },
+  {
+    "name": "Basic Attention Token",
+    "symbol": "bat",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bat.png"
+  },
+  {
+    "name": "Bancor",
+    "symbol": "bnt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bnt.png"
+  },
+  {
+    "name": "BitSend",
+    "symbol": "bsd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bsd.png"
+  },
+  {
+    "name": "TenX",
+    "symbol": "pay",
+    "logoUrl": "https://files.coinswitch.co/public/coins/pay.png"
+  },
+  {
+    "name": "Civic",
+    "symbol": "cvc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cvc.png"
+  },
+  {
+    "name": "Dash",
+    "symbol": "dash",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dash.png"
+  },
+  {
+    "name": "Decred",
+    "symbol": "dcr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dcr.png"
+  },
+  {
+    "name": "Gas",
+    "symbol": "gas",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gas.png"
+  },
+  {
+    "name": "DigiByte",
+    "symbol": "dgb",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dgb.png"
+  },
+  {
+    "name": "DigixDAO",
+    "symbol": "dgd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dgd.png"
+  },
+  {
+    "name": "district0x",
+    "symbol": "dnt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dnt.png"
+  },
+  {
+    "name": "Dogecoin",
+    "symbol": "doge",
+    "logoUrl": "https://files.coinswitch.co/public/coins/doge.png"
+  },
+  {
+    "name": "Edgeless",
+    "symbol": "edg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/edg.png"
+  },
+  {
+    "name": "Lisk",
+    "symbol": "lsk",
+    "logoUrl": "https://files.coinswitch.co/public/coins/lsk.png"
+  },
+  {
+    "name": "Factom",
+    "symbol": "fct",
+    "logoUrl": "https://files.coinswitch.co/public/coins/fct.png"
+  },
+  {
+    "name": "Waves",
+    "symbol": "waves",
+    "logoUrl": "https://files.coinswitch.co/public/coins/waves.png"
+  },
+  {
+    "name": "FunFair",
+    "symbol": "fun",
+    "logoUrl": "https://files.coinswitch.co/public/coins/fun.png"
+  },
+  {
+    "name": "GameCredits",
+    "symbol": "game",
+    "logoUrl": "https://files.coinswitch.co/public/coins/game.png"
+  },
+  {
+    "name": "Gnosis",
+    "symbol": "gno",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gno.png"
+  },
+  {
+    "name": "Golem",
+    "symbol": "gnt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gnt.png"
+  },
+  {
+    "name": "Matchpool",
+    "symbol": "gup",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gup.png"
+  },
+  {
+    "name": "Humaniq",
+    "symbol": "hmq",
+    "logoUrl": "https://files.coinswitch.co/public/coins/hmq.png"
+  },
+  {
+    "name": "Internet of People",
+    "symbol": "iop",
+    "logoUrl": "https://files.coinswitch.co/public/coins/iop.png"
+  },
+  {
+    "name": "Komodo",
+    "symbol": "kmd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/kmd.png"
+  },
+  {
+    "name": "LBRY Credits",
+    "symbol": "lbc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/lbc.png"
+  },
+  {
+    "name": "Bitcoin Gold",
+    "symbol": "btg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/btg.png"
+  },
+  {
+    "name": "Lunyr",
+    "symbol": "lun",
+    "logoUrl": "https://files.coinswitch.co/public/coins/lun.png"
+  },
+  {
+    "name": "Siacoin",
+    "symbol": "sc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/sc.png"
+  },
+  {
+    "name": "Decentraland",
+    "symbol": "mana",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mana.png"
+  },
+  {
+    "name": "Crypto.com",
+    "symbol": "mco",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mco.png"
+  },
+  {
+    "name": "Melon",
+    "symbol": "mln",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mln.png"
+  },
+  {
+    "name": "Metal",
+    "symbol": "mtl",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mtl.png"
+  },
+  {
+    "name": "NAV coin",
+    "symbol": "nav",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nav.png"
+  },
+  {
+    "name": "NuBits",
+    "symbol": "usnbt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/usnbt.png"
+  },
+  {
+    "name": "Gulden",
+    "symbol": "nlg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nlg.png"
+  },
+  {
+    "name": "Numeraire",
+    "symbol": "nmr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nmr.png"
+  },
+  {
+    "name": "OKCash",
+    "symbol": "ok",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ok.png"
+  },
+  {
+    "name": "OmiseGO",
+    "symbol": "omg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/omg.png"
+  },
+  {
+    "name": "PIVX",
+    "symbol": "pivx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/pivx.png"
+  },
+  {
+    "name": "PotCoin",
+    "symbol": "pot",
+    "logoUrl": "https://files.coinswitch.co/public/coins/pot.png"
+  },
+  {
+    "name": "Radium",
+    "symbol": "rads",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rads.png"
+  },
+  {
+    "name": "ReddCoin",
+    "symbol": "rdd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rdd.png"
+  },
+  {
+    "name": "Augur",
+    "symbol": "rep",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rep.png"
+  },
+  {
+    "name": "iExec RLC",
+    "symbol": "rlc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rlc.png"
+  },
+  {
+    "name": "SALT",
+    "symbol": "salt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/salt.png"
+  },
+  {
+    "name": "MaidSafeCoin",
+    "symbol": "maid",
+    "logoUrl": "https://files.coinswitch.co/public/coins/maid.png"
+  },
+  {
+    "name": "SaluS",
+    "symbol": "sls",
+    "logoUrl": "https://files.coinswitch.co/public/coins/sls.png"
+  },
+  {
+    "name": "SmartCash",
+    "symbol": "smart",
+    "logoUrl": "https://files.coinswitch.co/public/coins/smart.png"
+  },
+  {
+    "name": "SingularDTV",
+    "symbol": "sngls",
+    "logoUrl": "https://files.coinswitch.co/public/coins/sngls.png"
+  },
+  {
+    "name": "Status",
+    "symbol": "snt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/snt.png"
+  },
+  {
+    "name": "Storj",
+    "symbol": "storj",
+    "logoUrl": "https://files.coinswitch.co/public/coins/storj.png"
+  },
+  {
+    "name": "Stratis",
+    "symbol": "strat",
+    "logoUrl": "https://files.coinswitch.co/public/coins/strat.png"
+  },
+  {
+    "name": "Swarm City",
+    "symbol": "swt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/swt.png"
+  },
+  {
+    "name": "Syndicate",
+    "symbol": "synx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/synx.png"
+  },
+  {
+    "name": "Syscoin",
+    "symbol": "sys",
+    "logoUrl": "https://files.coinswitch.co/public/coins/sys.png"
+  },
+  {
+    "name": "Chronobank",
+    "symbol": "time",
+    "logoUrl": "https://files.coinswitch.co/public/coins/time.png"
+  },
+  {
+    "name": "TokenCard",
+    "symbol": "tkn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tkn.png"
+  },
+  {
+    "name": "WeTrust",
+    "symbol": "trst",
+    "logoUrl": "https://files.coinswitch.co/public/coins/trst.png"
+  },
+  {
+    "name": "Tether",
+    "symbol": "usdt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/usdt.png"
+  },
+  {
+    "name": "RevolutionVR",
+    "symbol": "rvr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rvr.png"
+  },
+  {
+    "name": "Vertcoin",
+    "symbol": "vtc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/vtc.png"
+  },
+  {
+    "name": "Wings",
+    "symbol": "wings",
+    "logoUrl": "https://files.coinswitch.co/public/coins/wings.png"
+  },
+  {
+    "name": "Xaurum",
+    "symbol": "xaur",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xaur.png"
+  },
+  {
+    "name": "DigitalNote",
+    "symbol": "xdn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xdn.png"
+  },
+  {
+    "name": "NEM",
+    "symbol": "xem",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xem.png"
+  },
+  {
+    "name": "Stellar Lumens",
+    "symbol": "xlm",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xlm.png"
+  },
+  {
+    "name": "ZCoin",
+    "symbol": "xzc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xzc.png"
+  },
+  {
+    "name": "Zcash",
+    "symbol": "zec",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zec.png"
+  },
+  {
+    "name": "Emercoin",
+    "symbol": "emc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/emc.png"
+  },
+  {
+    "name": "eBoost",
+    "symbol": "ebst",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ebst.png"
+  },
+  {
+    "name": "ZenCash",
+    "symbol": "zen",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zen.png"
+  },
+  {
+    "name": "Florin",
+    "symbol": "flo",
+    "logoUrl": "https://files.coinswitch.co/public/coins/flo.png"
+  },
+  {
+    "name": "Enjin Coin",
+    "symbol": "enj",
+    "logoUrl": "https://files.coinswitch.co/public/coins/enj.png"
+  },
+  {
+    "name": "Ripio Credit Network",
+    "symbol": "rcn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rcn.png"
+  },
+  {
+    "name": "Waltonchain",
+    "symbol": "wtc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/wtc.png"
+  },
+  {
+    "name": "Expanse",
+    "symbol": "exp",
+    "logoUrl": "https://files.coinswitch.co/public/coins/exp.png"
+  },
+  {
+    "name": "Bread",
+    "symbol": "brd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/brd.png"
+  },
+  {
+    "name": "Loopring",
+    "symbol": "lrc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/lrc.png"
+  },
+  {
+    "name": "Aeron",
+    "symbol": "arn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/arn.png"
+  },
+  {
+    "name": "Byteball",
+    "symbol": "gbyte",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gbyte.png"
+  },
+  {
+    "name": "ChainLink",
+    "symbol": "link",
+    "logoUrl": "https://files.coinswitch.co/public/coins/link.png"
+  },
+  {
+    "name": "LoMoCoin",
+    "symbol": "lmc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/lmc.png"
+  },
+  {
+    "name": "Enigma",
+    "symbol": "eng",
+    "logoUrl": "https://files.coinswitch.co/public/coins/eng.png"
+  },
+  {
+    "name": "Monero",
+    "symbol": "xmr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xmr.png"
+  },
+  {
+    "name": "Power Ledger",
+    "symbol": "powr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/powr.png"
+  },
+  {
+    "name": "Particl",
+    "symbol": "part",
+    "logoUrl": "https://files.coinswitch.co/public/coins/part.png"
+  },
+  {
+    "name": "Bankex",
+    "symbol": "bkx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bkx.png"
+  },
+  {
+    "name": "Groestlcoin",
+    "symbol": "grs",
+    "logoUrl": "https://files.coinswitch.co/public/coins/grs.png"
+  },
+  {
+    "name": "MonetaryUnit",
+    "symbol": "mue",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mue.png"
+  },
+  {
+    "name": "TransferCoin",
+    "symbol": "tx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tx.png"
+  },
+  {
+    "name": "Cindicator",
+    "symbol": "cnd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cnd.png"
+  },
+  {
+    "name": "Viberate",
+    "symbol": "vib",
+    "logoUrl": "https://files.coinswitch.co/public/coins/vib.png"
+  },
+  {
+    "name": "Populous",
+    "symbol": "ppt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ppt.png"
+  },
+  {
+    "name": "SONM",
+    "symbol": "snm",
+    "logoUrl": "https://files.coinswitch.co/public/coins/snm.png"
+  },
+  {
+    "name": "Patientory",
+    "symbol": "ptoy",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ptoy.png"
+  },
+  {
+    "name": "Quantum Resistant Ledger",
+    "symbol": "qrl",
+    "logoUrl": "https://files.coinswitch.co/public/coins/qrl.png"
+  },
+  {
+    "name": "Blocktix",
+    "symbol": "tix",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tix.png"
+  },
+  {
+    "name": "Mercury",
+    "symbol": "mer",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mer.png"
+  },
+  {
+    "name": "Kyber Network",
+    "symbol": "knc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/knc.png"
+  },
+  {
+    "name": "ZClassic",
+    "symbol": "zcl",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zcl.png"
+  },
+  {
+    "name": "BlockMason Credit Protocol",
+    "symbol": "bcpt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bcpt.png"
+  },
+  {
+    "name": "Shift",
+    "symbol": "shift",
+    "logoUrl": "https://files.coinswitch.co/public/coins/shift.png"
+  },
+  {
+    "name": "Synereo",
+    "symbol": "amp",
+    "logoUrl": "https://files.coinswitch.co/public/coins/amp.png"
+  },
+  {
+    "name": "adToken",
+    "symbol": "adt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/adt.png"
+  },
+  {
+    "name": "Unikoin Gold",
+    "symbol": "ukg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ukg.png"
+  },
+  {
+    "name": "Dynamic",
+    "symbol": "dyn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dyn.png"
+  },
+  {
+    "name": "Memetic-PepeCoin",
+    "symbol": "meme",
+    "logoUrl": "https://files.coinswitch.co/public/coins/meme.png"
+  },
+  {
+    "name": "IOStoken",
+    "symbol": "iost",
+    "logoUrl": "https://files.coinswitch.co/public/coins/iost.png"
+  },
+  {
+    "name": "Nano",
+    "symbol": "nano",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nano.png"
+  },
+  {
+    "name": "Aeternity",
+    "symbol": "ae",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ae.png"
+  },
+  {
+    "name": "WAX",
+    "symbol": "wax",
+    "logoUrl": "https://files.coinswitch.co/public/coins/wax.png"
+  },
+  {
+    "name": "True USD",
+    "symbol": "tusd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tusd.png"
+  },
+  {
+    "name": "SIRIN LABS Token",
+    "symbol": "srn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/srn.png"
+  },
+  {
+    "name": "BLOCKv",
+    "symbol": "vee",
+    "logoUrl": "https://files.coinswitch.co/public/coins/vee.png"
+  },
+  {
+    "name": "Revain",
+    "symbol": "r",
+    "logoUrl": "https://files.coinswitch.co/public/coins/r.png"
+  },
+  {
+    "name": "Telcoin",
+    "symbol": "tel",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tel.png"
+  },
+  {
+    "name": "Polymath",
+    "symbol": "poly",
+    "logoUrl": "https://files.coinswitch.co/public/coins/poly.png"
+  },
+  {
+    "name": "Dent",
+    "symbol": "dent",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dent.png"
+  },
+  {
+    "name": "NAGA",
+    "symbol": "ngc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ngc.png"
+  },
+  {
+    "name": "Dentacoin",
+    "symbol": "dcn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dcn.png"
+  },
+  {
+    "name": "Storm",
+    "symbol": "storm",
+    "logoUrl": "https://files.coinswitch.co/public/coins/storm.png"
+  },
+  {
+    "name": "UpToken",
+    "symbol": "up",
+    "logoUrl": "https://files.coinswitch.co/public/coins/up.png"
+  },
+  {
+    "name": "Noah Coin",
+    "symbol": "noah",
+    "logoUrl": "https://files.coinswitch.co/public/coins/noah.png"
+  },
+  {
+    "name": "Mithril",
+    "symbol": "mith",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mith.png"
+  },
+  {
+    "name": "BitTorrent",
+    "symbol": "btt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/btt.png"
+  },
+  {
+    "name": "Zap",
+    "symbol": "zap",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zap.png"
+  },
+  {
+    "name": "SkinCoin",
+    "symbol": "skin",
+    "logoUrl": "https://files.coinswitch.co/public/coins/skin.png"
+  },
+  {
+    "name": "Nexo",
+    "symbol": "nexo",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nexo.png"
+  },
+  {
+    "name": "The Abyss",
+    "symbol": "abyss",
+    "logoUrl": "https://files.coinswitch.co/public/coins/abyss.png"
+  },
+  {
+    "name": "BetterBetting",
+    "symbol": "betr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/betr.png"
+  },
+  {
+    "name": "Bitcoin Cash ABC",
+    "symbol": "bchabc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bchabc.png"
+  },
+  {
+    "name": "Bitcoin Cash SV",
+    "symbol": "bchsv",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bchsv.png"
+  },
+  {
+    "name": "USD Coin",
+    "symbol": "usdc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/usdc.png"
+  },
+  {
+    "name": "Dai",
+    "symbol": "dai",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dai.png"
+  },
+  {
+    "name": "VeChain",
+    "symbol": "vet",
+    "logoUrl": "https://files.coinswitch.co/public/coins/vet.png"
+  },
+  {
+    "name": "ICON",
+    "symbol": "icx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/icx.png"
+  },
+  {
+    "name": "Steem",
+    "symbol": "steem",
+    "logoUrl": "https://files.coinswitch.co/public/coins/steem.png"
+  },
+  {
+    "name": "Gifto",
+    "symbol": "gto",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gto.png"
+  },
+  {
+    "name": "Skycoin",
+    "symbol": "sky",
+    "logoUrl": "https://files.coinswitch.co/public/coins/sky.png"
+  },
+  {
+    "name": "Aion",
+    "symbol": "aion",
+    "logoUrl": "https://files.coinswitch.co/public/coins/aion.png"
+  },
+  {
+    "name": "Po.et",
+    "symbol": "poe",
+    "logoUrl": "https://files.coinswitch.co/public/coins/poe.png"
+  },
+  {
+    "name": "Red Pulse Phoenix",
+    "symbol": "phx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/phx.png"
+  },
+  {
+    "name": "SingularityNET",
+    "symbol": "agi",
+    "logoUrl": "https://files.coinswitch.co/public/coins/agi.png"
+  },
+  {
+    "name": "Loom Network",
+    "symbol": "loom",
+    "logoUrl": "https://files.coinswitch.co/public/coins/loom.png"
+  },
+  {
+    "name": "Dock",
+    "symbol": "dock",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dock.png"
+  },
+  {
+    "name": "Nebulas",
+    "symbol": "nas",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nas.png"
+  },
+  {
+    "name": "Ravencoin",
+    "symbol": "rvn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rvn.png"
+  },
+  {
+    "name": "Paxos Standard Token",
+    "symbol": "pax",
+    "logoUrl": "https://files.coinswitch.co/public/coins/pax.png"
+  },
+  {
+    "name": "Bytecoin",
+    "symbol": "bcn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bcn.png"
+  },
+  {
+    "name": "Cofound.it",
+    "symbol": "cfi",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cfi.png"
+  },
+  {
+    "name": "Nxt",
+    "symbol": "nxt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nxt.png"
+  },
+  {
+    "name": "Ardor",
+    "symbol": "ardr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ardr.png"
+  },
+  {
+    "name": "Golos Gold",
+    "symbol": "gbg",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gbg.png"
+  },
+  {
+    "name": "Golos",
+    "symbol": "golos",
+    "logoUrl": "https://files.coinswitch.co/public/coins/golos.png"
+  },
+  {
+    "name": "Monero Original",
+    "symbol": "xmo",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xmo.png"
+  },
+  {
+    "name": "STASIS EURS",
+    "symbol": "eurs",
+    "logoUrl": "https://files.coinswitch.co/public/coins/eurs.png"
+  },
+  {
+    "name": "Refereum",
+    "symbol": "rfr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rfr.png"
+  },
+  {
+    "name": "Ignis",
+    "symbol": "ignis",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ignis.png"
+  },
+  {
+    "name": "Bitcoin Diamond",
+    "symbol": "bcd",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bcd.png"
+  },
+  {
+    "name": "Binance Coin",
+    "symbol": "bnb",
+    "logoUrl": "https://files.coinswitch.co/public/coins/bnb.png"
+  },
+  {
+    "name": "Ontology Gas",
+    "symbol": "ong",
+    "logoUrl": "https://s3-ap-southeast-1.amazonaws.com/cs-public-uploads-prod/25ac9875-4646-46f3-a1e3-8a473b63d3d5"
+  },
+  {
+    "name": "Blox",
+    "symbol": "cdt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cdt.png"
+  },
+  {
+    "name": "VIBE",
+    "symbol": "vibe",
+    "logoUrl": "https://files.coinswitch.co/public/coins/vibe.png"
+  },
+  {
+    "name": "AppCoins",
+    "symbol": "appc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/appc.png"
+  },
+  {
+    "name": "Time New Bank",
+    "symbol": "tnb",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tnb.png"
+  },
+  {
+    "name": "ETHLend",
+    "symbol": "lend",
+    "logoUrl": "https://files.coinswitch.co/public/coins/lend.png"
+  },
+  {
+    "name": "Etherparty",
+    "symbol": "fuel",
+    "logoUrl": "https://files.coinswitch.co/public/coins/fuel.png"
+  },
+  {
+    "name": "Raiden Network Token",
+    "symbol": "rdn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/rdn.png"
+  },
+  {
+    "name": "Request Network",
+    "symbol": "req",
+    "logoUrl": "https://files.coinswitch.co/public/coins/req.png"
+  },
+  {
+    "name": "Agrello",
+    "symbol": "dlt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dlt.png"
+  },
+  {
+    "name": "INS Ecosystem",
+    "symbol": "ins",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ins.png"
+  },
+  {
+    "name": "Tierion",
+    "symbol": "tnt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tnt.png"
+  },
+  {
+    "name": "Quantstamp",
+    "symbol": "qsp",
+    "logoUrl": "https://files.coinswitch.co/public/coins/qsp.png"
+  },
+  {
+    "name": "WaBi",
+    "symbol": "wabi",
+    "logoUrl": "https://files.coinswitch.co/public/coins/wabi.png"
+  },
+  {
+    "name": "Everex",
+    "symbol": "evx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/evx.png"
+  },
+  {
+    "name": "Simple Token",
+    "symbol": "ost",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ost.png"
+  },
+  {
+    "name": "Genesis Vision",
+    "symbol": "gvt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gvt.png"
+  },
+  {
+    "name": "Monetha",
+    "symbol": "mth",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mth.png"
+  },
+  {
+    "name": "AirSwap",
+    "symbol": "ast",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ast.png"
+  },
+  {
+    "name": "Ambrosus",
+    "symbol": "amb",
+    "logoUrl": "https://files.coinswitch.co/public/coins/amb.png"
+  },
+  {
+    "name": "Eidoo",
+    "symbol": "edo",
+    "logoUrl": "https://files.coinswitch.co/public/coins/edo.png"
+  },
+  {
+    "name": "OAX",
+    "symbol": "oax",
+    "logoUrl": "https://files.coinswitch.co/public/coins/oax.png"
+  },
+  {
+    "name": "Ethos",
+    "symbol": "ethos",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ethos.png"
+  },
+  {
+    "name": "Nucleus Vision",
+    "symbol": "ncash",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ncash.png"
+  },
+  {
+    "name": "Bluzelle",
+    "symbol": "blz",
+    "logoUrl": "https://files.coinswitch.co/public/coins/blz.png"
+  },
+  {
+    "name": "Selfkey",
+    "symbol": "key",
+    "logoUrl": "https://files.coinswitch.co/public/coins/key.png"
+  },
+  {
+    "name": "Moeda Loyalty Points",
+    "symbol": "mda",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mda.png"
+  },
+  {
+    "name": "WePower",
+    "symbol": "wpr",
+    "logoUrl": "https://files.coinswitch.co/public/coins/wpr.png"
+  },
+  {
+    "name": "Holo",
+    "symbol": "hot",
+    "logoUrl": "https://files.coinswitch.co/public/coins/hot.png"
+  },
+  {
+    "name": "QuarkChain",
+    "symbol": "qkc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/qkc.png"
+  },
+  {
+    "name": "Streamr DATAcoin",
+    "symbol": "data",
+    "logoUrl": "https://files.coinswitch.co/public/coins/data.png"
+  },
+  {
+    "name": "Mainframe",
+    "symbol": "mft",
+    "logoUrl": "https://files.coinswitch.co/public/coins/mft.png"
+  },
+  {
+    "name": "Pundi X",
+    "symbol": "npxs",
+    "logoUrl": "https://files.coinswitch.co/public/coins/npxs.png"
+  },
+  {
+    "name": "Mothership",
+    "symbol": "msp",
+    "logoUrl": "https://files.coinswitch.co/public/coins/msp.png"
+  },
+  {
+    "name": "Neblio",
+    "symbol": "nebl",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nebl.png"
+  },
+  {
+    "name": "Peercoin",
+    "symbol": "ppc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ppc.png"
+  },
+  {
+    "name": "LIFE",
+    "symbol": "life",
+    "logoUrl": "https://files.coinswitch.co/public/coins/life.png"
+  },
+  {
+    "name": "LockTrip",
+    "symbol": "loc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/loc.png"
+  },
+  {
+    "name": "Nexium",
+    "symbol": "nxc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/nxc.png"
+  },
+  {
+    "name": "ChatCoin",
+    "symbol": "chat",
+    "logoUrl": "https://files.coinswitch.co/public/coins/chat.png"
+  },
+  {
+    "name": "KickCoin",
+    "symbol": "kick",
+    "logoUrl": "https://files.coinswitch.co/public/coins/kick.png"
+  },
+  {
+    "name": "IHT Real Estate Protocol",
+    "symbol": "iht",
+    "logoUrl": "https://files.coinswitch.co/public/coins/iht.png"
+  },
+  {
+    "name": "UTRUST",
+    "symbol": "utk",
+    "logoUrl": "https://files.coinswitch.co/public/coins/utk.png"
+  },
+  {
+    "name": "Fortuna",
+    "symbol": "fota",
+    "logoUrl": "https://files.coinswitch.co/public/coins/fota.png"
+  },
+  {
+    "name": "Odyssey",
+    "symbol": "ocn",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ocn.png"
+  },
+  {
+    "name": "Alphacat",
+    "symbol": "acat",
+    "logoUrl": "https://files.coinswitch.co/public/coins/acat.png"
+  },
+  {
+    "name": "Electrify.Asia",
+    "symbol": "elec",
+    "logoUrl": "https://files.coinswitch.co/public/coins/elec.png"
+  },
+  {
+    "name": "Zeepin",
+    "symbol": "zpt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/zpt.png"
+  },
+  {
+    "name": "THEKEY",
+    "symbol": "tky",
+    "logoUrl": "https://files.coinswitch.co/public/coins/tky.png"
+  },
+  {
+    "name": "GoByte",
+    "symbol": "gbx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/gbx.png"
+  },
+  {
+    "name": "CashBet Coin",
+    "symbol": "cbc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cbc.png"
+  },
+  {
+    "name": "Crowd Machine",
+    "symbol": "cmct",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cmct.png"
+  },
+  {
+    "name": "Crypterium",
+    "symbol": "crpt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/crpt.png"
+  },
+  {
+    "name": "Neurotoken",
+    "symbol": "ntk",
+    "logoUrl": "https://files.coinswitch.co/public/coins/ntk.png"
+  },
+  {
+    "name": "StockChain",
+    "symbol": "scc",
+    "logoUrl": "https://files.coinswitch.co/public/coins/scc.png"
+  },
+  {
+    "name": "HOQU",
+    "symbol": "hqx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/hqx.png"
+  },
+  {
+    "name": "Sentinel",
+    "symbol": "sent",
+    "logoUrl": "https://files.coinswitch.co/public/coins/sent.png"
+  },
+  {
+    "name": "Daneel",
+    "symbol": "dan",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dan.png"
+  },
+  {
+    "name": "Presearch",
+    "symbol": "pre",
+    "logoUrl": "https://files.coinswitch.co/public/coins/pre.png"
+  },
+  {
+    "name": "Patron",
+    "symbol": "pat",
+    "logoUrl": "https://files.coinswitch.co/public/coins/pat.png"
+  },
+  {
+    "name": "Constellation",
+    "symbol": "dag",
+    "logoUrl": "https://files.coinswitch.co/public/coins/dag.png"
+  },
+  {
+    "name": "BlitzPredict",
+    "symbol": "xbp",
+    "logoUrl": "https://files.coinswitch.co/public/coins/xbp.png"
+  },
+  {
+    "name": "ShowHand",
+    "symbol": "hand",
+    "logoUrl": "https://files.coinswitch.co/public/coins/hand.png"
+  },
+  {
+    "name": "Matrix AI Network",
+    "symbol": "man",
+    "logoUrl": "https://files.coinswitch.co/public/coins/man.png"
+  },
+  {
+    "name": "Own",
+    "symbol": "chx",
+    "logoUrl": "https://files.coinswitch.co/public/coins/chx.png"
+  },
+  {
+    "name": "Cosmo Coin",
+    "symbol": "cosm",
+    "logoUrl": "https://files.coinswitch.co/public/coins/cosm.png"
+  },
+  {
+    "name": "ATLANT",
+    "symbol": "atl",
+    "logoUrl": "https://files.coinswitch.co/public/coins/atl.png"
+  },
+  {
+    "name": "DomRaider",
+    "symbol": "drt",
+    "logoUrl": "https://files.coinswitch.co/public/coins/drt.png"
+  }
+]

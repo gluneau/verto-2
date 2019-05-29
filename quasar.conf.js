@@ -32,6 +32,7 @@ module.exports = function (ctx) {
       components: [
         'QAvatar',
         'QInnerLoading',
+        'QSpinnerGears',
         'QBtn',
         'QCard',
         'QCardSection',
@@ -46,6 +47,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemLabel',
         'QTable',
+        'QMarkupTable',
         'QBtnToggle',
         'QTr',
         'QTd',
@@ -112,7 +114,7 @@ module.exports = function (ctx) {
     devServer: {
       // https: true,
       // port: 8080,
-      open: false // opens browser window automatically
+      open: true // opens browser window automatically
     },
 
     // animations: 'all', // --- includes all animations

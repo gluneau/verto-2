@@ -30,6 +30,24 @@ export default [
         }
       },
       {
+        name: 'coinswitch-get-vtx',
+        path: 'coinswitch-get-vtx',
+        component: () => import('pages/GetVtx/coinswitch/GetAddress.vue'),
+        meta: {
+          authRequired: true,
+          needskeyscreated: true
+        }
+      },
+      {
+        name: 'coinswitch-status',
+        path: 'coinswitch-status',
+        component: () => import('pages/GetVtx/coinswitch/Status.vue'),
+        meta: {
+          authRequired: true,
+          needskeyscreated: true
+        }
+      },
+      {
         name: 'summary-vtx',
         path: 'summary-vtx',
         component: () => import('pages/GetVtx/Summary.vue'),
@@ -69,6 +87,15 @@ export default [
         name: 'request-native-chain-address',
         path: 'request-native-chain-address',
         component: () => import('pages/GetVtx/RequestNativeChainAddress.vue'),
+        meta: {
+          authRequired: true,
+          needskeyscreated: true
+        }
+      },
+      {
+        name: 'cs-get-vtx-transactions',
+        path: 'cs-get-vtx-transactions',
+        component: () => import('pages/GetVtx/coinswitch/TransactionList.vue'),
         meta: {
           authRequired: true,
           needskeyscreated: true

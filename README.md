@@ -16,6 +16,8 @@ Verto is being built as a multi-currency wallet for integrating sovereign servic
 
 - [Before You Begin](#before-you-begin)
 - [Install](#install)
+- [Before You Begin](#before-you-begin)
+- [Running Verto](#running-verto)
 - [Usage](#usage)
   * [Web](#web)
   * [Electron](#electron)
@@ -44,6 +46,20 @@ To install Verto you will need to have the following installed on your system:
 ```
 Note that other version of Node and NPM may work, however, these are the versions our team is using.
 ```
+
+## Before You Begin
+
+For local development purposes, you need to run a proxy for you to work with exchange. In order to do that, simply install local-cors-proxy:
+```
+npm install -g local-cors-proxy
+```
+
+Now run the proxy:
+```
+lcp --proxyUrl https://api.coinswitch.co
+```
+
+## Running Verto
 
 If you are looking to simply try running Verto, but do not wish to contribute, you can simply clone the repository
 ```

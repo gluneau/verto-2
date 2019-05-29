@@ -38,46 +38,59 @@
         </div>
       </q-card>
     </q-dialog>
-    <q-page class="text-center text-white bg-black" v-show="b8sOrZixiModal">
+    <q-page class="column flex-center text-white bg-black  text-white" v-show="b8sOrZixiModal">
+      <q-card flat class="bg-black" style="width: 100%; max-width: 550px;">
+        <q-card-section class="text-weight-bold text-center text-uppercase">
+            <q-icon class="float-left" name="help_outline" size="2.5rem" color="white" @click.native="$documentationManger.openDocumentation('addwallets/addLedger')">
+            <q-tooltip>{{ $t('SettingsView.help') }}</q-tooltip>
+            </q-icon>
+            <big class="titillium q-pa-xl">Choose Currency</big>
+            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('wallet')"/>
+        </q-card-section>
+      </q-card>
+      <br>
       <div class="flex justify-center">
         <q-list class="no-border">
-        <q-card-section class="text-weight-bold text-white text-center text-uppercase">
-          Choose Curency
-        </q-card-section>
-        <q-card style="width: 23rem; border-style: solid;" class="justify-center q-pa-sm q-mb-sm" flat>
-          <q-item class="full-width">
-            <q-item-section style="padding-right: 20px;" avatar/>
-            <q-avatar>
-              <img src="statics/img/btc.png"/>
-            </q-avatar>
-            <div class="verticalLine full-width">
-              <q-item-label class="full-width">
-                <q-item-tile label>Pay with Bitcoin</q-item-tile>
-                <q-item-tile sublabel>Blocktopus KYC</q-item-tile>
-              </q-item-label>
+        <!-- <div @click="$router.push('request-native-chain-address')">  coinswitch-get-vtx -->
+        <div @click="$router.push('cs-get-vtx-transactions')">
+          <q-card dark style="width: 23rem; border-style: solid;" class="justify-center q-pa-sm q-mb-sm bg-black upper-case" flat>
+            <div class="row full-width q-pa-md  ">
+              <div class="col-4">
+                <q-avatar>
+                  <img src="statics/img/btc.png"/>
+                </q-avatar>
+              </div>
+              <div class="col-4 text-uppercase">
+                <big>Crypto</big>
+              </div>
+              <div class="col-4 text-right">
+                <q-icon name="navigate_next" size="3.2rem" color="green">
+                <q-tooltip>{{ $t('next') }}</q-tooltip>
+              </q-icon>
+              </div>
             </div>
-            <q-icon name="navigate_next" size="3.2rem" color="white" @click.native="$router.push({ name: 'request-native-chain-address' })">
-              <q-tooltip>{{ $t('next') }}</q-tooltip>
-            </q-icon>
-          </q-item>
-        </q-card>
-        <q-card style="width: 23rem; border-style: solid;" class="justify-center q-pa-sm q-mb-sm" flat>
-          <q-item class="full-width">
-            <q-item-section style="padding-right: 20px;" avatar/>
-            <q-avatar>
-              <img src="statics/img/crypto-coins-2.png"/>
-            </q-avatar>
-            <div class="verticalLine full-width">
-              <q-item-label class="full-width">
-                <q-item-tile label>Pay with</q-item-tile>
-                <q-item-tile sublabel>USD, EURO, GEL, USDT, ETH</q-item-tile>
-              </q-item-label>
+          </q-card>
+        </div>
+        <br>
+        <div @click="$router.push('zixipay-get-vtx')">
+          <q-card dark style="width: 23rem; border-style: solid;" class="justify-center q-pa-sm q-mb-sm bg-black upper-case" flat>
+            <div class="row full-width q-pa-md  ">
+              <div class="col-4">
+                <q-avatar>
+                  <img src="statics/img/crypto-coins-2.png"/>
+                </q-avatar>
+              </div>
+              <div class="col-4 text-uppercase">
+                <big>FIAT</big>
+              </div>
+              <div class="col-4 text-right">
+                <q-icon name="navigate_next" size="3.2rem" color="green">
+                <q-tooltip>{{ $t('next') }}</q-tooltip>
+              </q-icon>
+              </div>
             </div>
-            <q-icon name="navigate_next" size="3.2rem" color="white" @click.native="$router.push({ path: 'zixipay-get-vtx'})">
-              <q-tooltip>{{ $t('next') }}</q-tooltip>
-            </q-icon>
-          </q-item>
-        </q-card>
+          </q-card>
+        </div>
         </q-list>
       </div>
     </q-page>
@@ -147,7 +160,7 @@ export default {
 
 <style>
 .verticalLine {
-  border-left: thin solid #ffffff;
+  border-left: thin solid green;
   padding-left: 20px;
 }
 </style>
