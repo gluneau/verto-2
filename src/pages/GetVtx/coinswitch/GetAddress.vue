@@ -6,7 +6,7 @@
             <q-tooltip>{{ $t('SettingsView.help') }}</q-tooltip>
             </q-icon>
             <big class="titillium q-pa-xl">Get VTX With Crypto</big>
-            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('cs-get-vtx-transactions')"/>
+            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('summary-vtx')"/>
         </q-card-section>
         </q-card>
         <q-card flat class="bg-black" style="width: 100%; max-width: 750px;">
@@ -80,10 +80,13 @@
                             label="Return Address"
                         />
                     </div>
-                    <div class="q-pa-sm text-center" v-show="returnAddress" @click="$refs.stepper.next()">
-                        <q-icon name="navigate_next" size="3.2rem" color="green"   >
-                        <q-tooltip>{{ $t('next') }}</q-tooltip>
-                        </q-icon>
+                    <div class="text-center">
+                      <div class="q-pa-sm" v-show="returnAddress" @click="$refs.stepper.next()">
+                          <q-icon name="navigate_next" size="3.2rem" color="green"   >
+                          <q-tooltip>{{ $t('next') }}</q-tooltip>
+                          </q-icon>
+                      </div>
+                      <q-btn color="white" flat @click="$refs.stepper.previous()" label="Back" />
                     </div>
                 </q-step>
                 <q-step :name="3" title="Calculate VTX" class="bg-black workflow-step" :done="step>3">
@@ -104,10 +107,13 @@
                             label="Amount From Selected Currency"
                         />
                     </div>
-                    <div class="q-pa-sm text-center" v-show="true" @click="$refs.stepper.next()">
-                        <q-icon name="navigate_next" size="3.2rem" color="green"   >
-                        <q-tooltip>{{ $t('next') }}</q-tooltip>
-                        </q-icon>
+                    <div class="text-center">
+                      <div class="q-pa-sm text-center" v-show="nativeCurrencyAmount > 0" @click="$refs.stepper.next()">
+                          <q-icon name="navigate_next" size="3.2rem" color="green"   >
+                            <q-tooltip>{{ $t('next') }}</q-tooltip>
+                          </q-icon>
+                      </div>
+                      <q-btn color="white" flat @click="$refs.stepper.previous()" label="Back" />
                     </div>
                 </q-step>
                 <q-step :name="4" title="Submit" class="bg-black workflow-step" :done="step>4">
@@ -142,10 +148,13 @@
                         </template>
                     </countdown>
                     </div>
-                    <div class="q-pa-sm text-center" v-show="!submitSpinnervisible && showSubmit" @click="submit()">
-                        <q-icon name="navigate_next" size="3.2rem" color="green"   >
-                        <q-tooltip>{{ $t('next') }}</q-tooltip>
-                        </q-icon>
+                    <div class="text-center">
+                      <div class="q-pa-sm text-center" v-show="!submitSpinnervisible && showSubmit" @click="submit()">
+                          <q-icon name="navigate_next" size="3.2rem" color="green"   >
+                            <q-tooltip>{{ $t('next') }}</q-tooltip>
+                          </q-icon>
+                      </div>
+                      <q-btn color="white" flat @click="$refs.stepper.previous()" label="Back" />
                     </div>
                 </q-step>
             </q-stepper>
@@ -156,6 +165,7 @@
 <script>
 import store from '@/store'
 import { userError } from '@/util/errorHandler'
+import countdown from '@chenfengyuan/vue-countdown'
 
 // TODO: Talk about this... no need for the PROXY
 let url = process.env[store.state.settings.network].COINSWITCH_URL
@@ -182,6 +192,9 @@ export default {
       timeremaining: 0,
       showSubmit: true
     }
+  },
+  components: {
+    countdown
   },
   mounted () {
     this.spinnervisible = true
@@ -248,6 +261,21 @@ export default {
       console.log('** Needs to call the crowdfund server as that is where the BTC address will be added to the Coinswitch request.')
       console.log('** The BTC stuff needs to be on the server else anyone will be able to replace theirs with ours. In this way, we will be able to ensure that the transation makes it to the right place.')
       console.log('** Also need to think about how we will be giving the user status on the transactions themselves.')
+      // curl -X POST -d '{ "verto_public_address": "EOS6pq8C2bn921FK98fdsBGHkDnvb2QXokW9c6pxgKbkRLnvjqox9", "deposit_coin": "eth", "deposit_coin_amount": 10}' -H "Content-Type: application/json" http://localhost:8000/public/api/coinswitch-create-transaction/
+      let hashResult = await this.$axios.post(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/coinswitch-create-transaction/', {
+        verto_public_address: this.$store.state.currentwallet.wallet.key,
+        deposit_coin: this.depositCoin.value,
+        deposit_coin_amount: this.nativeCurrencyAmount
+      })
+      const res = await hashResult
+      if (res.data.success) {
+        this.$router.push(
+          '/coinswitch-status?' +
+        'order_id=' + res.data.order_id
+        )
+      } else {
+        userError(res.data.message)
+      }
     },
     async submit () {
       if (this.depositCoin.value === 'btc') {

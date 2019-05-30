@@ -52,7 +52,7 @@
       <div class="flex justify-center">
         <q-list class="no-border">
         <!-- <div @click="$router.push('request-native-chain-address')">  coinswitch-get-vtx -->
-        <div @click="$router.push('cs-get-vtx-transactions')">
+        <div @click="$router.push('coinswitch-get-vtx')">
           <q-card dark style="width: 23rem; border-style: solid;" class="justify-center q-pa-sm q-mb-sm bg-black upper-case" flat>
             <div class="row full-width q-pa-md  ">
               <div class="col-4">

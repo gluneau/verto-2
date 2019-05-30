@@ -93,15 +93,6 @@ export default [
         }
       },
       {
-        name: 'cs-get-vtx-transactions',
-        path: 'cs-get-vtx-transactions',
-        component: () => import('pages/GetVtx/coinswitch/TransactionList.vue'),
-        meta: {
-          authRequired: true,
-          needskeyscreated: true
-        }
-      },
-      {
         name: 'associate-venue',
         path: 'associate-venue',
         component: () => import('pages/Wallet/AssociateVenue.vue'),

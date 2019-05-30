@@ -71,6 +71,12 @@
         <!--
                 STATUS!!!!!!
         -->
+        <div v-if="walletStatus === 'crowdfund_over'">
+          <div class="text-h2 animate-blink text-red q-pa-sm" style='border-style: solid;'>
+            {{ $t('BeginGetVtx.paused') }}
+          </div>
+          <br>
+        </div>
         <div style='border-style: solid;  border-width: 0.1em'>
           <div v-show="walletStatus === 'purchase_not_allowed'">
             <div  class="q-pa-md text-h6 text-uppercase">
@@ -117,15 +123,31 @@
           <div v-show="walletStatus === 'wallet_not_allocated' || walletStatus === 'wallet_allocated'">
             <div class="q-pa-lg row">
               <div class='col-6'>
-                <q-btn color="green" outline  dense style="min-width: 150px;" @click="$router.push({path: 'coinswitch-get-vtx'})">Contribute With Crypto</q-btn>
+                <q-btn
+                  color="green"
+                  outline
+                  dense style="min-width: 150px;"
+                  @click="$router.push({path: 'coinswitch-get-vtx'})"
+                >
+                  <div class="q-pa-sm text-white">
+                    Get VTX With Crypto
+                  </div>
+                </q-btn>
               </div>
               <div class='col-6'>
-                <q-btn color="green" outline  dense style="min-width: 150px;" @click="$router.push({path: 'zixipay-get-vtx'})">Contribute With FIAT</q-btn>
+                <q-btn
+                  color="green"
+                  outline
+                  dense
+                  style="min-width: 150px;"
+                  @click="$router.push({path: 'zixipay-get-vtx'})"
+                >
+                  <div class="q-pa-sm text-white">
+                  Get VTX With FIAT
+                  </div>
+                </q-btn>
               </div>
             </div>
-          </div>
-          <div v-if="walletStatus === 'crowdfund_over'" class="text-h2 animate-blink text-red q-pa-sm" style='border-style: solid;'>
-            {{ $t('BeginGetVtx.paused') }}
           </div>
         <div class="text-center text-weight-bold text-uppercase q-pa-lg">
                 <div class="q-pa-sm row">
@@ -293,8 +315,7 @@ export default {
     showRowStatus (row) {
       this.$router.push(
         '/coinswitch-status?' +
-        'order_id=' + row.order_id +
-        '&create_time=' + row.create_time
+        'order_id=' + row.order_id
       )
     },
     async refreshContent () {

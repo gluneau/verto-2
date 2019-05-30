@@ -7,7 +7,7 @@
             <q-tooltip>{{ $t('SettingsView.help') }}</q-tooltip>
             </q-icon>
             <big class="titillium q-pa-xl">{{ statusLabel }}</big>
-            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('cs-get-vtx-transactions')"/>
+            <q-icon class="float-right" name="close" size="2.5rem" color="white" @click.native="$router.push('summary-vtx')"/>
         </q-card-section>
         <q-card-section>
           <div class="text-center text-uppercase">
@@ -79,15 +79,16 @@
               </div>
             </div>
             <div v-show="orderInformation.status === 'no_deposit'">
+              <div class="text-h6">
+              {{ statusDesc }}
+              </div>
               <div class="row">
                 <div class="col-6 text-center q-pa-md">
                   <qrcode :value="orderInformation.exchangeAddress.address" :options="{size: 280}" class="q-mt-sm"></qrcode>
                 </div>
                 <div class="col-6 text-h6 text-center q-pa-md">
-                    {{ statusDesc }}
-                    <br>
-                    <br>
-                    <q-btn flat round dense  icon="file_copy" class="text-h6" @click="copyAddress(nativeChainAddress)" >Copy</q-btn>
+                  <br>
+                  <q-btn flat round dense  icon="file_copy" class="text-h3" @click="copyAddress(nativeChainAddress)" >Copy</q-btn>
                 </div>
               </div>
               <br>
@@ -133,7 +134,6 @@ export default {
   data () {
     return {
       orderId: '',
-      createTime: null,
       coinswitchUrl: null,
       headers: {},
       statusLabel: 'Getting INformation',
@@ -167,7 +167,6 @@ export default {
     }
 
     this.orderId = this.$route.query.order_id
-    this.createTime = this.$route.query.create_time
     this.getOrderInformation()
   },
   methods: {
