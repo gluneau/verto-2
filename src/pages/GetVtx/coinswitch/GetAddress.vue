@@ -54,9 +54,13 @@
                         </q-item>
                     </template>
                     </q-select>
+
+                    <div v-show="hasError" class="text-h6 text-uppercase text-red q-pa-md">
+                        {{ errorMessage }}
+                    </div>
                     </q-card-section>
 
-                    <div class="q-pa-sm text-center" v-show="depositCoin" @click="$refs.stepper.next()">
+                    <div class="q-pa-sm text-center" v-show="depositCoin" @click="stepOneNext()">
                         <q-icon name="navigate_next" size="3.2rem" color="green"   >
                         <q-tooltip>{{ $t('next') }}</q-tooltip>
                         </q-icon>
@@ -121,10 +125,10 @@
                    <q-inner-loading :showing="submitSpinnervisible">
                         <q-spinner-gears size="50px" color="black" />
                     </q-inner-loading>
+                    <div class="text-h2">
                     Does the steps of the submit or something.
-
-                    <div v-show="hasError" class="text-h6 text-uppercase text-red q-pa-md">
-                        {{ errorMessage }}
+                    Please add summary here.... or can we remove this step entirely?????1.5em
+                    Your call...
                     </div>
 
                     <div v-show="mustWait" class="text-h6 text-uppercase text-red q-pa-md">
@@ -212,11 +216,17 @@ export default {
           logoUrl: self.coins[i].logoUrl
         })
       }
-      console.log(JSON.stringify(printList, null, 2))
       self.getBtcPairs(result.data.data)
     })
   },
   methods: {
+    stepOneNext () {
+      if (this.depositCoin.value === 'btc') {
+        this.allocateBtc()
+      } else {
+        this.$refs.stepper.next()
+      }
+    },
     transform (props) {
       Object.entries(props).forEach(([key, value]) => {
         if (key === 'totalSeconds' && value <= 1) {
@@ -231,12 +241,14 @@ export default {
     async allocateBtc () {
       this.hasError = false
       this.errorMessage = ''
-      this.submitSpinnervisible = true
+      this.spinnervisible = true
       let hashResult = await this.$axios.post(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/initiate-transaction/', {
         verto_public_address: this.$store.state.currentwallet.wallet.key,
         currency: 'btc'
       })
+
       const res = await hashResult
+      console.log(JSON.stringify(res.data))
       if (res.data.success) {
         this.$router.push({ name: 'begin-get-vtx' })
       } else {
@@ -255,12 +267,9 @@ export default {
           this.showSubmit = false
         }
       }
-      this.submitSpinnervisible = false
+      this.spinnervisible = false
     },
     async allocateNonBtc () {
-      console.log('** Needs to call the crowdfund server as that is where the BTC address will be added to the Coinswitch request.')
-      console.log('** The BTC stuff needs to be on the server else anyone will be able to replace theirs with ours. In this way, we will be able to ensure that the transation makes it to the right place.')
-      console.log('** Also need to think about how we will be giving the user status on the transactions themselves.')
       // curl -X POST -d '{ "verto_public_address": "EOS6pq8C2bn921FK98fdsBGHkDnvb2QXokW9c6pxgKbkRLnvjqox9", "deposit_coin": "eth", "deposit_coin_amount": 10}' -H "Content-Type: application/json" http://localhost:8000/public/api/coinswitch-create-transaction/
       let hashResult = await this.$axios.post(process.env[this.$store.state.settings.network].CROWDFUND_URL + '/public/api/coinswitch-create-transaction/', {
         verto_public_address: this.$store.state.currentwallet.wallet.key,
@@ -276,8 +285,10 @@ export default {
       } else {
         userError(res.data.message)
       }
+      this.submitSpinnervisible = false
     },
     async submit () {
+      this.submitSpinnervisible = true
       if (this.depositCoin.value === 'btc') {
         this.allocateBtc()
       } else {
