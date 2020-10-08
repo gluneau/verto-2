@@ -378,33 +378,6 @@ export default [
         }
       },
       {
-        name: 'cruxpay',
-        path: '/cruxpay',
-        component: () => import('pages/CRUX/Dashboard.vue'),
-        meta: {
-          authRequired: true,
-          needskeyscreated: true
-        }
-      },
-      {
-        name: 'wallet',
-        path: 'wallet',
-        component: () => import('pages/Wallet/Wallet.vue'),
-        meta: {
-          authRequired: true,
-          needskeyscreated: true
-        }
-      },
-      {
-        name: 'wallets',
-        path: 'wallets',
-        component: () => import('pages/Wallet/Wallets.vue'),
-        meta: {
-          authRequired: true,
-          needskeyscreated: true
-        }
-      },
-      {
         name: 'mnemonic',
         path: 'mnemonic',
         component: () => import('pages/Intro/Mnemonic.vue'),

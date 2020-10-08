@@ -19,14 +19,6 @@ export default [
         component: () => import('pages/Verto/CreateVertoPassword.vue')
       },
       {
-        name: 'recovery-seed',
-        path: '/recovery-seed',
-        component: () => import('pages/Verto/RecoverySeed.vue'),
-        meta: {
-          authRequired: true
-        }
-      },
-      {
         name: 'cruxpay',
         path: '/cruxpay',
         component: () => import('pages/Verto/CruxPaySetup.vue'),
@@ -101,12 +93,6 @@ export default [
         name: 'verto',
         path: '/verto',
         component: () => import('pages/Verto/CreateVertoPassword.vue'),
-        meta: {}
-      },
-      {
-        name: 'restore-wallet',
-        path: 'restore-wallet/:returnto',
-        component: () => import('pages/Wallet/RestoreWallet.vue'),
         meta: {}
       }
     ]

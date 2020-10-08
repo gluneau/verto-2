@@ -2,19 +2,15 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import store from '../store/index.js'
-import otherRoutes from './routes'
 import login from './login'
-import getVtx from './getVtx'
 import wallet from './wallet'
 
 const routes = [
-  ...otherRoutes,
-  ...getVtx,
   ...login,
   ...wallet
 ]
 if (process.env.MODE !== 'ssr') {
-  otherRoutes.push({
+  login.push({
     path: '*',
     component: () => import('pages/Error404.vue')
   })
