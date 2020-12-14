@@ -27,8 +27,6 @@ export default [
         component: () => import('pages/Verto/CreateVertoPassword.vue')
       },
       {
-<<<<<<< HEAD
-=======
         name: 'recovery-seed',
         path: '/recovery-seed',
         component: () => import('pages/Verto/RecoverySeed.vue'),
@@ -45,7 +43,6 @@ export default [
         }
       },
       {
->>>>>>> 805c4afa16da1622f79a76b01c7f3d2ad37c3aa0
         name: 'cruxpay',
         path: '/cruxpay/:fromStep',
         component: () => import('pages/Verto/CruxPaySetup.vue'),
