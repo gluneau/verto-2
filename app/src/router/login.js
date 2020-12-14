@@ -12,6 +12,14 @@ export default [
         name: 'login',
         path: '/login',
         component: () => import('pages/Verto/Landing.vue')
+      }, {
+        name: 'login',
+        path: '/login/transaction/:fromCoin/:toCoin/:amount',
+        component: () => import('pages/Verto/ConnectToVerto.vue')
+      }, {
+        name: 'login',
+        path: '/login/:nextUrl',
+        component: () => import('pages/Verto/ConnectToVerto.vue')
       },
       {
         name: 'create-password',
@@ -19,13 +27,39 @@ export default [
         component: () => import('pages/Verto/CreateVertoPassword.vue')
       },
       {
+<<<<<<< HEAD
+=======
+        name: 'recovery-seed',
+        path: '/recovery-seed',
+        component: () => import('pages/Verto/RecoverySeed.vue'),
+        meta: {
+          authRequired: true
+        }
+      },
+      {
+        name: 'create-keys',
+        path: '/create-keys',
+        component: () => import('pages/Verto/CreateKeys.vue'),
+        meta: {
+          authRequired: true
+        }
+      },
+      {
+>>>>>>> 805c4afa16da1622f79a76b01c7f3d2ad37c3aa0
         name: 'cruxpay',
-        path: '/cruxpay',
+        path: '/cruxpay/:fromStep',
         component: () => import('pages/Verto/CruxPaySetup.vue'),
         meta: {
           authRequired: false
         }
       },
+      // {
+      //   path: '/vdexnode/login',
+      //   component: () => import('pages/vDexNode/Login.vue'),
+      //   meta: {
+      //     requiresAuth: true
+      //   }
+      // },
       {
         name: 'create-wallet-options',
         path: '/create-wallet-options',
@@ -54,21 +88,6 @@ export default [
         name: 'eos-account',
         path: '/eos-account',
         component: () => import('pages/Wallet/EosAccount.vue'),
-        meta: {
-          authRequired: true
-        }
-      },
-      {
-        name: 'exchange',
-        path: '/exchange',
-        component: () => import('pages/Exchange/CoinSwitch.vue'),
-        meta: {
-          authRequired: true
-        }
-      }, {
-        name: 'oneInch',
-        path: '/verto/oneInch',
-        component: () => import('pages/Exchange/oneInch.vue'),
         meta: {
           authRequired: true
         }

@@ -1,13 +1,13 @@
 <template>
-  <div class="desktop-card-style make-vtx q-mb-sm">
+  <div class="desktop-card-style make-vtx q-mb-sm" :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
     <br>
     <div class="row flex justify-between q-pb-sm q-pt-md">
       <div class="header-col col-12 flex justify-between items-center">
         <h4 class="q-pl-sm">DeFi</h4>
         <!-- <q-btn unelevated class="qbtn-new" @click="openDialog = true" color="black" text-color="white" label="New" /> -->
       </div>
-      <div class="col col-8 flex items-center q-pl-md" style="min-height: 120px">
-        <p class="earn-exchange">Earn exchange fees and pool rewards</p>
+      <div class="col col-8 flex items-center q-pl-md" style="min-height: 50px">
+        <p class="earn-exchange">Earn exchange fees and pool rewards.</p>
       </div>
       <div class="col col-4 flex items-center">
         <img src="statics/liquidity_pool.png" class="full-width" alt="">
@@ -49,7 +49,7 @@ export default {
         h4{
           margin-top: -5px;
           line-height: 16px;
-          font-size: 18px;
+          font-size: 14px;
           padding-right: 25px;
           font-weight: $bold;
           color: #6C0DCB;
@@ -102,6 +102,8 @@ export default {
         img{
           max-width: 120px;
           transform: translateX(-10px);
+          margin-top: -30px;
+          margin-bottom: 10px;
         }
         strong{
           margin-bottom: 0px;
@@ -158,9 +160,18 @@ export default {
         }
       }
     }
+    &.dark-theme{
+      color: #FFF;
+      .row .col .step-1-lab{
+          color: #FFF;
+          background: #04111F;
+      }
+    }
   }
   .earn-exchange{
-    font-size: 18px;
+    font-size: 14px;
     font-weight: $bold;
+    margin-bottom: 0px;
+    padding-right: 10px;
   }
 </style>

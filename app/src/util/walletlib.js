@@ -1,8 +1,97 @@
 import EosWrapper from '@/util/EosWrapper'
 import axios from 'axios'
 import store from '@/store'
+import { userError } from '@/util/errorHandler'
+import { date } from 'quasar'
+import abiArray from '@/statics/abi/erc20.json'
 
 class Lib {
+  history = async (walletType, key, token) => {
+    const wallet = {
+      async eos (token, key) {
+        // console.log('history eos!', key, token)
+        let actions = []
+        await axios.post(process.env[store.state.settings.network].CACHE + process.env[store.state.settings.network].EOS_HISTORYAPI + '/v1/history/get_actions', { 'account_name': key })
+          .then(function (result) {
+            if (result.length !== 0) {
+              result.data.actions.reverse().map(a => {
+                // console.log('split', a.action_trace.act.name === 'transfer' ? a.action_trace.act.data.quantity.toString().split(' ')[1].toLowerCase() : 'not transfer')
+                if (token === 'eos' || (
+                  a.action_trace.act.name === 'transfer' &&
+                    a.action_trace.receiver === key &&
+                    a.action_trace.act.data.quantity.toString().split(' ')[1].toLowerCase() === token)
+                ) {
+                  // console.log('walletlib history actions', a)
+
+                  let amount = ''
+                  switch (a.action_trace.act.name) {
+                    case 'transfer':
+                      amount = a.action_trace.act.data.to !== key ? '-' + a.action_trace.act.data.quantity : a.action_trace.act.data.quantity
+                      break
+                    case 'deposit':
+                      amount = a.action_trace.act.data.to !== key ? '-' + a.action_trace.act.data.amount : a.action_trace.act.data.amount
+                      break
+                    case 'rentcpu':
+                      amount = a.action_trace.act.data.to !== key ? '-' + a.action_trace.act.data.loan_payment : a.action_trace.act.data.loan_payment
+                      break
+                  }
+
+                  actions.push({
+                    date: date.formatDate(a.block_time, 'YYYY-MM-DD HH:mm'),
+                    transID: a.action_trace.trx_id,
+                    from: a.action_trace.act.data.from,
+                    to: a.action_trace.act.data.to,
+                    typeTran: a.action_trace.act.name,
+                    desc: a.action_trace.act.data.memo ? a.action_trace.act.data.memo.substring(0, 20) : '',
+                    amount
+                  })
+                }
+              })
+              return actions
+            }
+          }).catch(function (error) {
+            // TODO: Exception handling
+            // console.log('history error', error)
+            userError(error)
+            return false
+          })
+
+        // Promise.all(balProm)
+        return { history: actions }
+      },
+      async eth (token, key) {
+        // console.log('history eth!', key)
+        let actions = []
+        await axios.get('http://api.etherscan.io/api?module=account&action=txlist&startblock=0&endblock=99999999&sort=desc&address=' + key)
+          .then(function (result) {
+            if (result.length !== 0) {
+              result.data.result.map(a => {
+                actions.push({
+                  date: date.formatDate(a.timeStamp * 1000, 'YYYY-MM-DD HH:mm'),
+                  transID: a.hash,
+                  from: a.from,
+                  to: a.to,
+                  typeTran: '',
+                  desc: '',
+                  amount: (a.value / 1000000000000000000) + ' ETH'
+                })
+              })
+              return actions
+            }
+          }).catch(function (error) {
+            // TODO: Exception handling
+            // console.log('history error', error)
+            userError(error)
+            return false
+          })
+
+        return { history: actions }
+      }
+    }[walletType]
+
+    return wallet ? wallet(key, token) : {}
+  }
+
   balance = async (walletType, key, token) => {
     const wallet = {
       async eos (key, token) {
@@ -12,12 +101,21 @@ class Lib {
           vtx: 'volentixgsys'
         }
         const eos = new EosWrapper()
-        const bal = await eos.getCurrencyBalanceP(key, tokenContract[token])
-        // console.log('walletlib', key, tokenContract[token], bal)
-        if (bal) {
-          float = bal[0].split(' ')[0]
-        }
+        // const balProm =
+        await eos.getCurrencyBalanceP(key, tokenContract[token])
+          .then(function (result) {
+            // //console.log('walletlib', key, tokenContract[token], bal)
+            if (result.length) {
+              float = result[0].split(' ')[0]
+              return float
+            }
+          }).catch(function (error) {
+            // TODO: Exception handling
+            userError(error)
+            return false
+          })
 
+        // Promise.all(balProm)
         return { balance: float }
       },
       async eth (key, token) {
@@ -46,9 +144,9 @@ class Lib {
               amount = +b.free + +b.frozen + +b.locked
             })
           }
-          // console.log('bnb', balances, amount)
+          // //console.log('bnb', balances, amount)
         } catch (err) {
-          // console.log('', err)
+          // //console.log('', err)
         }
         const usd = amount * (await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd')).data.binancecoin.usd
         return { amount, usd }
@@ -69,31 +167,34 @@ class Lib {
         // const bitcore = require('bitcore-lib')
         const bitcore = require('bitcore-lib')
         const explorers = require('bitcore-explorers')
-        const insight = new explorers.Insight()
+        const insight = new explorers.Insight(process.env[store.state.settings.network].CACHE + 'https://explorer.btc.zelcore.io/') // 'https://insight.bitpay.com')
 
         let message, success
         try {
-          let privateKey = new bitcore.PrivateKey(key)
+          // eslint-disable-next-line new-cap
+          let privateKey = new bitcore.PrivateKey.fromWIF(key)
+          let address = bitcore.Address.fromString(from)
+          // console.log('privateKey', privateKey)
 
           insight.getUnspentUtxos(from, function (error, utxos) {
             if (error) {
-              // console.log(error)
+              console.log(error)
             } else {
-              // console.log(utxos)
+              console.log(utxos)
               var tx = new bitcore.Transaction()
                 .from(utxos)
                 .to(to, value * 100000000)
-                .change(from)
+                .change(address)
                 .sign(privateKey)
                 .serialize()
 
               return new Promise(async (resolve, reject) => {
                 insight.broadcast(tx, function (error, transactionId) {
                   if (error) {
-                    // console.log(error)
+                    console.log(error)
                     return reject()
                   } else {
-                    // console.log(transactionId)
+                    console.log(transactionId)
                     resolve({
                       message: `https://www.blockchain.com/btc/tx/${transactionId}`,
                       success: true
@@ -113,7 +214,7 @@ class Lib {
       async eos (token, from, to, value, memo, key, contract) {
         let message, success
         try {
-          const formatedAmount = await formatAmountString(value, token, key)
+          const formatedAmount = await formatAmountString(value, token, from)
           const transaction = await (new EosWrapper()).transferToken(
             contract,
             from.toLowerCase(),
@@ -123,7 +224,7 @@ class Lib {
             key
           )
 
-          message = `https://bloks.io/transaction/${transaction.transaction_id}`
+          message = process.env[store.state.settings.network].EOS_TRANSACTION_EXPLORER + transaction.transaction_id
           success = true
         } catch (err) {
           message = err
@@ -132,10 +233,11 @@ class Lib {
 
         return { success, message }
 
-        async function formatAmountString (value, token, key) {
+        async function formatAmountString (value, token, from) {
           let numberOfDecimals = 0
           let tableData = await store.state.wallets.tokens
-          let currentAccount = tableData.find(w => w.privateKey === key && w.type === token)
+          // Can't try to find using privateKey since legacy wallets use encrypted keys
+          let currentAccount = tableData.find(w => w.name === from && w.type === token)
           let stringAmount = (Math.round(+value * Math.pow(10, currentAccount.precision)) / Math.pow(10, currentAccount.precision)).toString()
 
           const amountParsed = stringAmount.split('.')
@@ -151,41 +253,76 @@ class Lib {
           return stringAmount + ' ' + token.toUpperCase()
         }
       },
-      async eth (token, from, to, value, memo, key) {
+      async eth (token, from, to, value, memo, key, contract) {
+        console.log('token, from, to, value, memo, key, contract', token, from, to, value, memo, key, contract)
+        console.log('abiArray', abiArray)
+
         const Web3 = require('web3')
         const EthereumTx = require('ethereumjs-tx').Transaction
         const web3 = new Web3(new Web3.providers.HttpProvider('https://main-rpc.linkpool.io'))
 
         let nonce = await web3.eth.getTransactionCount(from)
         let gasPrices = await getCurrentGasPrices()
+        let data = '0x00'
+        let web3Value = web3.utils.toHex(web3.utils.toWei(value.toString()))
+        let transactionHash = ''
+        let sendTo = to
+
+        if (token !== 'eth') {
+          let web3Contract = new web3.eth.Contract(abiArray, contract)
+          data = web3Contract.methods.transfer(to, web3Value).encodeABI()
+          console.log('data for', token, data)
+          sendTo = contract
+          web3Value = '0x00'
+        }
+
+        let rawTx = {
+          from,
+          to: sendTo,
+          value: web3Value,
+          data,
+          gasPrice: gasPrices.medium * 1000000000,
+          nonce,
+          chainId: 1
+        }
+        console.log('rawTx:', rawTx)
+
+        let gas = await web3.eth.estimateGas(rawTx)
+        console.log('gas:', gas)
+        rawTx.gas = gas
 
         try {
-          let details = {
-            from,
-            to,
-            value: web3.utils.toHex(web3.utils.toWei(value.toString())),
-            gas: 21000,
-            gasPrice: gasPrices.low * 1000000000, // converts the gwei price to wei
-            nonce,
-            chainId: 1 // EIP 155 chainId - mainnet: 1, rinkeby: 4,  Ropsten: 3
-          }
-
-          // console.log('details', details)
-
-          const transaction = new EthereumTx(details)
+          const transaction = new EthereumTx(rawTx)
           transaction.sign(Buffer.from(key.substring(2), 'hex'))
           const serializedTransaction = transaction.serialize()
+          console.log('serializedTransaction', serializedTransaction)
 
           return new Promise(async (resolve, reject) => {
-            web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'), (err, id) => {
-              if (err) {
-                // console.log(err)
-                return reject()
+            // web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'), (err, id) => {
+            //   if (err) {
+            //     console.log(err)
+            //     return reject()
+            //   }
+            //   resolve({
+            //     message: process.env[store.state.settings.network].ETH_TRANSACTION_EXPLORER + id,
+            //     success: true
+            //   })
+            // })
+            let tx = web3.eth.sendSignedTransaction('0x' + serializedTransaction.toString('hex'))
+
+            tx.on('confirmation', (confirmationNumber, receipt) => {
+              if (confirmationNumber > 2) {
+                resolve({
+                  message: process.env[store.state.settings.network].ETH_TRANSACTION_EXPLORER + transactionHash,
+                  success: true
+                })
               }
-              resolve({
-                message: `https://etherscan.io/tx/${id}`,
-                success: true
-              })
+              console.log('receipt:', confirmationNumber, receipt)
+            })
+
+            tx.on('transactionHash', hash => {
+              transactionHash = hash
+              console.log('hash:', hash)
             })
           })
         } catch (err) {

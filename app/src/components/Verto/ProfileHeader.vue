@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
     <div class="send-modal flex flex-center" :class="{'open' : openModal}">
       <div class="send-modal__content column flex-center">
         <div class="send-modal__content--head">
-          <span class="text-h5 --amount">{{ currentAccount.name.toUpperCase() }}</span>
-          <q-btn color="white" rounded flat unelevated @click="openModal = false" class="close-btn" text-color="black" label="+" />
+          <span class="text-h5 --amount">{{ currentAccount.name.toUpperCase().replace('- HD', '') }}</span>
+          <q-btn color="white" rounded flat unelevated @click="openModal = false" class="close-btn" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white':'black'" label="+" />
         </div>
         <div class="send-modal__content--body qrcode-wrapper column flex-center">
           <qrcode :value="currentAccount.key" :options="{size: 200}"></qrcode>
@@ -29,7 +29,7 @@
     </div>
     <div v-else-if="version === 'type2'" class="profile-wrapper--header static_with_image" style="background: url('statics/header_bg.png');">
       <div class="flex justify-between flex-row item-center content-center full-width">
-        <q-btn flat unelevated class="btn-align-left" :to="goBack" text-color="white" icon="keyboard_backspace" />
+        <q-btn flat unelevated class="btn-align-left" to="/verto/wallets/" text-color="white" icon="keyboard_backspace" />
         <h3 class="flex flex-center text-white static__holder_title">Making VTX while you sleep, will be available soon.</h3>
         <span class="static__holder_img flex flex-center"><img src="statics/stake-vtx-bg.svg" alt=""></span>
       </div>
@@ -40,8 +40,8 @@
     </div>
     <div v-else-if="version === 'type3'" class="column flex-center profile-wrapper--header wallet-detail" style="background: url('statics/header_bg.png');">
       <q-btn flat unelevated class="btn-align-left" :to="goBack" text-color="white" icon="keyboard_backspace" />
-      <h3 class="profile-wrapper--header__title text-white">{{ currentAccount.name.toUpperCase() }}</h3>
-      <h2 class="profile-wrapper--header__balance text-white">{{ new Number(currentAccount.amount).toFixed(8) }} {{ currentAccount.type.toUpperCase() }}</h2>
+      <h3 class="profile-wrapper--header__title text-white">{{ currentAccount.name.toUpperCase().replace('- HD', '') }}</h3>
+      <h2 class="profile-wrapper--header__balance text-white">{{ nFormatter2(currentAccount.amount, 3) }} {{ currentAccount.type.toUpperCase() }}</h2>
       <div class="profile-wrapper--header__action">
         <q-btn unelevated to="/verto/wallets/send" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Send" />
         <q-btn unelevated to="/verto/wallets/receive" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Receive" />
@@ -66,18 +66,20 @@
       </div>
     </div>
     <div v-else-if="version === 'type6'" class="profile-wrapper--header static" style="background: url(statics/refer_friend_bg.png) center bottom / cover no-repeat rgb(255, 255, 255) !important; min-height: 390px; box-shadow: none !important; border-radius: 0px;" />
-    <div v-else class="column flex-center profile-wrapper--header" :class="{'desktop-ui' : !isMobile, 'selected-wallet': !$store.state.currentwallet.wallet.empty}" style="background: url('statics/header_bg.png');">
-      <q-btn v-if="!$store.state.currentwallet.wallet.empty" outline round @click="resetSelectedWallet()" to="/verto/dashboard" color="white" class="reset-btn" text-color="white" icon="close" />
-      <h3 class="profile-wrapper--header__title text-white" v-if="!$store.state.currentwallet.wallet.empty">{{$store.state.currentwallet.wallet.name}}</h3>
+    <div v-else class="column flex-center profile-wrapper--header" :class="{'desktop-ui' : !isMobile, 'selected-wallet':  !isMobile && !$store.state.currentwallet.wallet.empty}" style="background: url('statics/header_bg.png');">
+      <q-btn v-if="!isMobile && !$store.state.currentwallet.wallet.empty" outline round @click="resetSelectedWallet()" to="/verto/dashboard" color="white" class="reset-btn" text-color="white" icon="close" />
+      <h3 class="profile-wrapper--header__title text-white" v-if="!isMobile && !$store.state.currentwallet.wallet.empty">{{$store.state.currentwallet.wallet.name.replace('- HD', '')}}</h3>
       <h3 class="profile-wrapper--header__title text-white" v-else>Main Portfolio</h3>
-      <h2 class="profile-wrapper--header__balance text-white" v-if="!$store.state.currentwallet.wallet.empty">${{ new Number($store.state.currentwallet.wallet.usd).toFixed(2) }} USD <span class="profile-wrapper--header__equivalent">Equivalent to <b>{{ new Number(+$store.state.currentwallet.wallet.amount).toFixed(2) + ' ' + $store.state.currentwallet.wallet.type.toUpperCase() }}</b></span></h2>
-      <h2 class="profile-wrapper--header__balance text-white" v-else>${{ new Number(this.$store.state.wallets.portfolioTotal).toFixed(2) }} USD <span class="profile-wrapper--header__equivalent">Equivalent</span></h2>
+      <h2 class="profile-wrapper--header__balance text-white" v-if="!isMobile && !$store.state.currentwallet.wallet.empty">${{ isNaN($store.state.currentwallet.wallet.usd) ? 0 : nFormatter2($store.state.currentwallet.wallet.usd, 3) }} USD <span class="profile-wrapper--header__equivalent">Equivalent to <b>{{ isNaN($store.state.currentwallet.wallet.usd) ? 0 : nFormatter2(+$store.state.currentwallet.wallet.amount,3) + ' ' + $store.state.currentwallet.wallet.type.toUpperCase() }}</b></span></h2>
+      <h2 class="profile-wrapper--header__balance text-white" v-else>${{ nFormatter2($store.state.wallets.portfolioTotal, 3) }} USD <span class="profile-wrapper--header__equivalent">Equivalent</span></h2>
       <!-- {{$store.state.wallets.portfolioTotal}} -->
       <div class="profile-wrapper--header__action">
-        <q-btn unelevated v-if="screenSize <= 1024" :disable="$store.state.currentwallet.wallet.type === 'verto'" to="/verto/wallets/send" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Send" />
-        <q-btn unelevated v-if="screenSize > 1024" :disable="$store.state.currentwallet.wallet.type === 'verto'" @click="!$store.state.currentwallet.wallet.empty ? goToSendPage() : notifSelectWallet()" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Send" />
-        <q-btn unelevated v-if="screenSize <= 1024" to="/verto/wallets/receive" :disable="$store.state.currentwallet.wallet.type === 'verto'" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Receive" />
-        <q-btn unelevated v-if="screenSize > 1024" :disable="$store.state.currentwallet.wallet.type === 'verto'" @click="!$store.state.currentwallet.wallet.empty ? goToReceivePage() : notifSelectWallet()" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Receive" />
+
+        <q-btn unelevated v-if="screenSize <= 1024" :disable="$store.state.currentwallet.wallet.type === 'verto' || !(['eos','eth'].includes($store.state.currentwallet.wallet.chain))" to="/verto/wallets/send" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Send" />
+        <q-btn unelevated v-if="screenSize > 1024" :disable="$store.state.currentwallet.wallet.type === 'verto' || !(['eos','eth'].includes($store.state.currentwallet.wallet.chain))" @click="!$store.state.currentwallet.wallet.empty ? goToSendPage() : notifSelectWallet()" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Send" />
+        <q-btn unelevated v-if="screenSize <= 1024" to="/verto/wallets/receive" :disable="$store.state.currentwallet.wallet.type === 'verto' || !(['eos','eth'].includes($store.state.currentwallet.wallet.chain))" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Receive" />
+        <q-btn unelevated v-if="screenSize > 1024" :disable="$store.state.currentwallet.wallet.type === 'verto'|| !(['eos','eth'].includes($store.state.currentwallet.wallet.chain)) " @click="!$store.state.currentwallet.wallet.empty ? goToReceivePage() : notifSelectWallet()" class="profile-wrapper--header__action-btn" color="indigo-12" text-color="white" label="Receive" />
+
       </div>
     </div>
   </div>
@@ -158,6 +160,7 @@ export default {
   //   }
   // },
   async created () {
+    console.log('$store.state.wallets.portfolioTotal', this.$store.state.wallets.portfolioTotal)
     // console.log('****_*_*_selectedCoin Profileheader****_*_*_', this.$store.state.currentwallet.wallet)
     this.getWindowWidth()
     window.addEventListener('resize', this.getWindowWidth)
@@ -240,6 +243,25 @@ export default {
         type: 'warning',
         position: 'top'
       })
+    },
+    nFormatter2 (num, digits) {
+      var si = [
+        { value: 1, symbol: '' },
+        { value: 1E3, symbol: 'k' },
+        { value: 1E6, symbol: 'M' },
+        { value: 1E9, symbol: 'G' },
+        { value: 1E12, symbol: 'T' },
+        { value: 1E15, symbol: 'P' },
+        { value: 1E18, symbol: 'E' }
+      ]
+      var rx = /\.0+$|(\.[0-9]*[1-9])0+$/
+      var i
+      for (i = si.length - 1; i > 0; i--) {
+        if (num >= si[i].value) {
+          break
+        }
+      }
+      return (num / si[i].value).toFixed(digits).replace(rx, '$1') + si[i].symbol
     }
   }
 }
@@ -265,6 +287,7 @@ export default {
         color: #FFF;
         font-size: 10px;
         font-weight: $light;
+        width: 100%;
       }
       &.desktop-ui{
         border-radius: 10px;
@@ -278,9 +301,10 @@ export default {
             font-size: 18px;
           }
           &__balance{
-            font-size: 32px;
+            font-size: 26px;
             position: relative;
             width: fit-content;
+            min-width: 200px;
           }
           &__action-btn{
             margin-bottom: -20px;
@@ -423,6 +447,9 @@ export default {
         margin-bottom: 5px;
         letter-spacing: 1px;
         position: relative;
+        @media screen and (max-width: 768px) {
+          font-size: 32px;
+        }
       }
       &__action{
         text-align: center;
@@ -488,7 +515,7 @@ export default {
         .close-btn{
           position: absolute;
           right: 10px;
-          top: 10px;
+          top: -20px;
           font-size: 40px;
           font-weight: $light;
           font-family: $Titillium;
@@ -564,5 +591,43 @@ export default {
     // width: 35px;
     transform: scale(.5);
 
+  }
+  .dark-theme{
+    .send-modal__content{
+      background-color: #04111F !important;
+      border: 1px solid #627797;
+      .send-modal__content--body .--label{
+        background-color: #04111F;
+        color: #FFF;
+        bottom: -20px;
+        border-radius: 5px;
+      }
+      .send-modal__content--footer .--email{
+        color: #FFF;
+      }
+      .send-modal__content--head .--amount{
+        color: #FFF;
+      }
+    }
+    .profile-wrapper{
+      &--header{
+        &__action{
+          .qr-btn{
+            border: 1px solid rgba(255, 255, 255, .2);
+          }
+          &-btn{
+            background: #FFF !important;
+            color: #000 !important;
+            margin: 0px 10px;
+            width: 100px;
+            border-radius: 30px;
+            height: 40px;
+            text-transform: initial !important;
+            font-size: 16px;
+            letter-spacing: .3px;
+          }
+        }
+      }
+    }
   }
 </style>

@@ -18,6 +18,13 @@ export default [
         }
       },
       {
+        path: '/verto/vdexnode',
+        component: () => import('pages/vDexNode/Index.vue'),
+        meta: {
+          authRequired: true
+        }
+      },
+      {
         name: 'secret-words',
         path: '/verto/secret-words',
         component: () => import('pages/Verto/SecretWords.vue'),
@@ -66,13 +73,28 @@ export default [
     ]
   },
   {
+    name: 'embed',
+    path: '/verto/embed',
+    component: () => import('components/Verto/External/IframeWallet.vue'),
+    meta: {
+      authRequired: true
+    }
+  },
+  {
     path: '/verto',
     component: () => import('layouts/IntroWithTabs.vue'),
     children: [
       {
         name: 'import-private-key',
-        path: '/verto/import-private-key',
+        path: '/verto/import-private-key/eos',
         component: () => import('pages/Verto/ImportPrivateKey.vue'),
+        meta: {
+          authRequired: true
+        }
+      }, {
+        name: 'import-eth-private-key',
+        path: '/verto/import-private-key/eth',
+        component: () => import('pages/Verto/ImportETHPrivateKey.vue'),
         meta: {
           authRequired: true
         }
@@ -126,9 +148,26 @@ export default [
         }
       },
       {
+        name: 'buycpu',
+        path: '/verto/buycpu',
+        component: () => import('pages/Verto/BuyCPU.vue'),
+        meta: {
+          authRequired: true,
+          needskeyscreated: true
+        }
+      },
+      {
         name: 'stake',
         path: '/verto/stake',
         component: () => import('pages/Verto/Stake.vue'),
+        meta: {
+          authRequired: true
+        }
+      },
+      {
+        name: 'stakeproxy',
+        path: '/verto/stakeproxy',
+        component: () => import('pages/Verto/StakeProxyEos.vue'),
         meta: {
           authRequired: true
         }
@@ -229,9 +268,17 @@ export default [
           authRequired: true
         }
       },
+
       {
         name: 'send',
         path: '/verto/wallets/send',
+        component: () => import('pages/Verto/Send.vue'),
+        meta: {
+          authRequired: true
+        }
+      }, {
+        name: 'send',
+        path: '/verto/wallets/send/:chainID/:tokenID/:accountName?',
         component: () => import('pages/Verto/Send.vue'),
         meta: {
           authRequired: true

@@ -1,170 +1,172 @@
 <template>
-  <q-page class="text-black bg-white">
-    <div class="desktop-version" v-if="screenSize > 1024">
-      <div class="row">
-        <div class="col col-md-3">
-          <div class="wallets-container">
-            <profile-header :isMobile="false" class="marg" version="type2222" />
-            <wallets :isMobile="false" :showWallets="false" :isWalletsPage="false" :isWalletDetail="false" />
-            <!-- <img src="statics/prototype_screens/wallets.jpg" alt=""> -->
+  <q-page class="text-black bg-white" :class="screenSize > 1024 ? 'desktop-marg': 'mobile-pad'">
+    <div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+      <div class="desktop-version" v-if="screenSize > 1024">
+        <div class="row">
+          <div class="col col-md-3">
+            <div class="wallets-container">
+              <profile-header :isMobile="false" class="marg" version="type2222" />
+              <wallets :isMobile="false" :showWallets="false" :isWalletsPage="false" :isWalletDetail="false" />
+              <!-- <img src="statics/prototype_screens/wallets.jpg" alt=""> -->
+            </div>
           </div>
-        </div>
-        <div class="col col-md-9">
-          <div class="desktop-card-style apps-section q-mb-sm">
-            <div class="standard-content">
-              <h2 class="standard-content--title flex">Receive</h2>
-              <div class="standard-content--body">
-                <div class="standard-content--body__form">
-                  <div class="row">
-                    <div class="col col-6 q-pr-md">
-                      <span class="lab-input">To <b class="verto-id">{{existingCruxID}}</b></span>
-                      <q-select
-                          light
-                          separator
-                          rounded
-                          outlined
-                          class="select-input"
-                          v-model="currentToken"
-                          :options="options"
-                      >
-                        <template v-slot:option="scope">
-                          <q-item
-                            class="custom-menu"
-                            v-bind="scope.itemProps"
-                            v-on="scope.itemEvents"
-                          >
-                            <q-item-section avatar>
-                              <q-icon class="option--avatar" :name="`img:${scope.opt.image}`" />
-                            </q-item-section>
-                            <q-item-section dark>
-                              <q-item-label v-html="scope.opt.label" />
-                              <q-item-label caption class="ellipsis mw200">{{ scope.opt.value }}</q-item-label>
-                            </q-item-section>
-                          </q-item>
-                        </template>
-                        <template v-slot:selected>
-                          <q-item
-                            v-if="currentToken"
-                          >
-                            <q-item-section avatar>
-                              <q-icon class="option--avatar" :name="`img:${currentToken.image}`" />
-                            </q-item-section>
-                            <q-item-section>
-                              <q-item-label v-html="currentToken.label" />
-                              <q-item-label caption class="ellipsis mw200">{{ currentToken.value }}</q-item-label>
-                            </q-item-section>
-                          </q-item>
-                          <q-item
-                            v-else>
-                          </q-item>
-                        </template>
-                      </q-select>
-                    </div>
-                    <div class="col col-6 flex justify-end">
-                      <div class="standard-content--footer ">
-                        <q-btn flat class="action-link next" @click="toggleShare()" color="black" text-color="white" label="Share" />
+          <div class="col col-md-9">
+            <div class="desktop-card-style apps-section q-mb-sm" :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+              <div class="standard-content">
+                <h2 class="standard-content--title flex">Receive</h2>
+                <div class="standard-content--body">
+                  <div class="standard-content--body__form">
+                    <div class="row">
+                      <div class="col col-6 q-pr-md">
+                        <span class="lab-input">To <b class="verto-id">{{existingCruxID}}</b></span>
+                        <q-select
+                            :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                            separator
+                            rounded
+                            outlined
+                            class="select-input"
+                            v-model="currentToken"
+                            :options="options"
+                        >
+                          <template v-slot:option="scope">
+                            <q-item
+                              class="custom-menu"
+                              v-bind="scope.itemProps"
+                              v-on="scope.itemEvents"
+                            >
+                              <q-item-section avatar>
+                                <q-icon class="option--avatar" :name="`img:${scope.opt.image}`" />
+                              </q-item-section>
+                              <q-item-section dark>
+                                <q-item-label v-html="scope.opt.label" />
+                                <q-item-label caption class="ellipsis mw200">{{ scope.opt.value }}</q-item-label>
+                              </q-item-section>
+                            </q-item>
+                          </template>
+                          <template v-slot:selected>
+                            <q-item
+                              v-if="currentToken"
+                            >
+                              <q-item-section avatar>
+                                <q-icon class="option--avatar" :name="`img:${currentToken.image}`" />
+                              </q-item-section>
+                              <q-item-section>
+                                <q-item-label v-html="currentToken.label" />
+                                <q-item-label caption class="ellipsis mw200">{{ currentToken.value }}</q-item-label>
+                              </q-item-section>
+                            </q-item>
+                            <q-item
+                              v-else>
+                            </q-item>
+                          </template>
+                        </q-select>
                       </div>
-                      <!-- <span class="lab-input">Or Via Verto ID (Cruxpay)</span> -->
-                      <!-- <q-input v-model="vertoID" class="input-input" rounded readonly outlined color="purple" type="text"/> -->
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col col-6 q-pr-md q-pt-md">
-                      <div class="qrcode-wrapper">
-                        <div class="wallet-address flex justify-between">
-                          <span class="title">Wallet address</span>
-                          <q-btn round flat unelevated @click="copyToClipboard(exchangeAddress , 'Address')" class="btn-copy" text-color="grey" icon="o_file_copy" />
+                      <div class="col col-6 flex justify-end">
+                        <div class="standard-content--footer ">
+                          <q-btn flat class="action-link next" @click="toggleShare()" color="black" text-color="white" label="Share" />
                         </div>
-                        <span class="qrcode-widget">
-                          <qrcode :value="currentToken.type === 'eos' ? currentToken.label : currentToken.value" :options="{size: 200}"></qrcode>
-                          <span class="exchange-address full-width text-center">{{currentToken.type === 'eos' ? currentToken.label : currentToken.value}}</span>
-                        </span>
+                        <!-- <span class="lab-input">Or Via Verto ID (Cruxpay)</span> -->
+                        <!-- <q-input v-model="vertoID" class="input-input" rounded readonly outlined color="purple" type="text"/> -->
                       </div>
                     </div>
-                    <!-- <div class="col col-6 column justify-end items-end items-end"> -->
-                      <!-- <div class="standard-content--footer">
-                        <q-btn flat class="action-link next" @click="toggleShare()" color="black" text-color="white" label="Share" />
-                      </div> -->
-                    <!-- </div> -->
+                    <div class="row">
+                      <div class="col col-6 q-pr-md q-pt-md">
+                        <div class="qrcode-wrapper">
+                          <div class="wallet-address flex justify-between">
+                            <span class="title">Wallet address</span>
+                            <q-btn round flat unelevated @click="copyToClipboard(exchangeAddress , 'Address')" class="btn-copy" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white' : 'grey'" icon="o_file_copy" />
+                          </div>
+                          <span class="qrcode-widget">
+                            <qrcode dark :value="currentToken.type === 'eos' ? currentToken.label : currentToken.value" :options="{size: 200}"></qrcode>
+                            <span class="exchange-address full-width text-center">{{currentToken.type === 'eos' ? currentToken.label : currentToken.value}}</span>
+                          </span>
+                        </div>
+                      </div>
+                      <!-- <div class="col col-6 column justify-end items-end items-end"> -->
+                        <!-- <div class="standard-content--footer">
+                          <q-btn flat class="action-link next" @click="toggleShare()" color="black" text-color="white" label="Share" />
+                        </div> -->
+                      <!-- </div> -->
+                    </div>
                   </div>
                 </div>
-              </div>
 
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else class="standard-content">
-      <h2 class="standard-content--title flex justify-center">
-        <q-btn flat unelevated class="btn-align-left" :to="goBack" text-color="black" icon="keyboard_backspace" />
-        Receive
-      </h2>
-      <div class="standard-content--body">
-        <div class="standard-content--body__form">
-          <span class="lab-input">To</span>
-          <q-select
-              light
-              separator
-              rounded
-              outlined
-              class="select-input"
-              v-model="currentToken"
-              :options="options"
-          >
-            <template v-slot:option="scope">
-              <q-item
-                class="custom-menu"
-                v-bind="scope.itemProps"
-                v-on="scope.itemEvents"
-              >
-                <q-item-section avatar>
-                  <q-icon class="option--avatar" :name="`img:${scope.opt.image}`" />
-                </q-item-section>
-                <q-item-section dark>
-                  <q-item-label v-html="scope.opt.label" />
-                  <q-item-label caption class="ellipsis mw200">{{ scope.opt.value }}</q-item-label>
-                </q-item-section>
-              </q-item>
-            </template>
-            <template v-slot:selected>
-              <q-item
-                v-if="currentToken"
-              >
-                <q-item-section avatar>
-                  <q-icon class="option--avatar" :name="`img:${currentToken.image}`" />
-                </q-item-section>
-                <q-item-section>
-                  <q-item-label v-html="currentToken.label" />
-                  <q-item-label caption class="ellipsis mw200">{{ currentToken.value }}</q-item-label>
-                </q-item-section>
-              </q-item>
-              <q-item
-                v-else>
-              </q-item>
-            </template>
-          </q-select>
-          <span class="lab-input">Or Via Verto ID (Cruxpay)</span>
-          <q-input v-model="vertoID" class="input-input" rounded readonly outlined color="purple" type="text"/>
-          <br>
-          <div class="qrcode-wrapper">
-            <div class="wallet-address flex justify-between">
-              <span class="title">Wallet address</span>
-              <q-btn round flat unelevated @click="copyToClipboard(exchangeAddress , 'Address')" class="btn-copy" text-color="grey" icon="o_file_copy" />
+      <div v-else class="standard-content mobile-version">
+        <h2 class="standard-content--title flex justify-center">
+          <q-btn flat unelevated class="btn-align-left" :to="goBack" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white':'black'" icon="keyboard_backspace" />
+          Receive
+        </h2>
+        <div class="standard-content--body">
+          <div class="standard-content--body__form">
+            <span class="lab-input">To</span>
+            <q-select
+                :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                separator
+                rounded
+                outlined
+                class="select-input"
+                v-model="currentToken"
+                :options="options"
+            >
+              <template v-slot:option="scope">
+                <q-item
+                  class="custom-menu"
+                  v-bind="scope.itemProps"
+                  v-on="scope.itemEvents"
+                >
+                  <q-item-section avatar>
+                    <q-icon class="option--avatar" :name="`img:${scope.opt.image}`" />
+                  </q-item-section>
+                  <q-item-section dark>
+                    <q-item-label v-html="scope.opt.label" />
+                    <q-item-label caption class="ellipsis mw200">{{ scope.opt.value }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+              </template>
+              <template v-slot:selected>
+                <q-item
+                  v-if="currentToken"
+                >
+                  <q-item-section avatar>
+                    <q-icon class="option--avatar" :name="`img:${currentToken.image}`" />
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label v-html="currentToken.label" />
+                    <q-item-label caption class="ellipsis mw200">{{ currentToken.value }}</q-item-label>
+                  </q-item-section>
+                </q-item>
+                <q-item
+                  v-else>
+                </q-item>
+              </template>
+            </q-select>
+            <span class="lab-input">Or Via Verto ID (Cruxpay)</span>
+            <q-input v-model="vertoID" class="input-input" rounded readonly outlined color="purple" type="text"/>
+            <br>
+            <div class="qrcode-wrapper">
+              <div class="wallet-address flex justify-between">
+                <span class="title">Wallet address</span>
+                <q-btn round flat unelevated @click="copyToClipboard(exchangeAddress , 'Address')" class="btn-copy"  :text-color="$store.state.lightMode.lightMode === 'true' ? 'white' : 'grey'" icon="o_file_copy" />
+              </div>
+              <span class="qrcode-widget">
+                <qrcode :value="currentToken.type === 'eos' ? currentToken.label : currentToken.value" :options="{size: 200}"></qrcode>
+                <span class="exchange-address full-width text-center">{{currentToken.type === 'eos' ? currentToken.label : currentToken.value}}</span>
+              </span>
             </div>
-            <span class="qrcode-widget">
-              <qrcode :value="currentToken.type === 'eos' ? currentToken.label : currentToken.value" :options="{size: 200}"></qrcode>
-              <span class="exchange-address full-width text-center">{{currentToken.type === 'eos' ? currentToken.label : currentToken.value}}</span>
-            </span>
           </div>
         </div>
-      </div>
-      <div class="standard-content--footer">
-         <q-btn flat class="action-link next" @click="toggleShare()" color="black" text-color="white" label="Share" />
+        <div class="standard-content--footer">
+          <q-btn flat class="action-link next" @click="toggleShare()" color="black" text-color="white" label="Share" />
+        </div>
       </div>
     </div>
     <q-dialog v-model="showShareWrapper">
-      <q-card class="q-pa-lg">
+      <q-card class="q-pa-lg" :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"  :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
         <q-toolbar>
           <q-avatar><img src="statics/icon.png"></q-avatar>
           <q-toolbar-title><span class="text-weight-bold">Share</span> Public Key</q-toolbar-title>
@@ -280,10 +282,10 @@
                 </social-sharing>
               </span>
               <div id="copy-btn flex">
-                <q-btn color="white" text-color="black" @click="copyToClipboard(exchangeAddress , 'Link')" class="copy-link-button" flat label="Copy link">
+                <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black':'white'" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white':'black'"  @click="copyToClipboard(exchangeAddress , 'Link')" class="copy-link-button" flat label="Copy link">
                   <img src="/statics/social/copy.svg" alt="">
                 </q-btn>
-                <q-btn color="white" text-color="black" @click="copyToClipboard(existingCruxID , 'Link')" class="copy-link-button q-ml-sm" flat label="Copy VERTO ID">
+                <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black':'white'" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white':'black'"  @click="copyToClipboard(existingCruxID , 'Link')" class="copy-link-button q-ml-sm" flat label="Copy VERTO ID">
                   <img src="/statics/social/copy.svg" alt="">
                 </q-btn>
               </div>
@@ -461,12 +463,62 @@ export default {
       }
     }
   }
+  .mobile-pad {
+    padding-bottom: 50px;
+    background: #FFF !important;
+  }
   .desktop-version{
     background: #E7E8E8;
     padding-top: 13vh;
-    padding-left: 12vh;
+    padding-left: 20vh;
     padding-bottom: 50px;
     padding-right: 2%;
+    @media screen and (min-width: 768px) {
+      padding-top: 11vh;
+      padding-bottom: 0px;
+    }
+  }
+  .dark-theme{
+    .mobile-version{
+      background: #04111F;
+      .standard-content--body__form .qrcode-wrapper .title{
+        color: #FFF;
+      }
+      .standard-content--title{
+        color: #FFF;
+      }
+      .standard-content--body__form .lab-input{
+        color: #FFF;
+      }
+      .standard-content--body__form .input-input{
+        /deep/ button{
+          color: #FFF !important;
+        }
+      }
+    }
+    &.q-card{
+      border: 1px solid #627797;
+    }
+    .standard-content--body__form .qrcode-wrapper{
+      border: 1px solid #627797;
+    }
+    .desktop-version{
+      background: #04111F;
+      padding-bottom: 8px;
+      min-height: 102vh;
+      overflow: hidden;
+      position: relative;
+      scrollbar-width: 0px;
+      .col-title h4{
+          color: #FFF;
+      }
+      .standard-content--body__form .lab-input{
+        color: #FFF;
+      }
+      .standard-content--body__form .select-input .q-field__control .q-field__native .q-item .q-item__section .q-item__label + .q-item__label{
+        color: #CCC;
+      }
+    }
   }
   .desktop-card-style{
     height: 100%;
@@ -747,10 +799,22 @@ export default {
   .mw200{
     max-width: 220px;
   }
+  .social-media-wrapper{
+    /deep/ .share_wrapper .q-btn.q-btn-item img{
+      @media screen and (max-width: 768px) {
+        margin-left: 20px;
+      }
+    }
+  }
   /deep/ .copy-link-button{
     border: 1px solid #f7f7f7;
     background: #fdfdfd;
     border-radius: 0px;
+    @media screen and (max-width: 768px) {
+      margin-left: 0px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
     .q-btn__content{
       flex-direction: row-reverse !important;
       font-size: 18px;
@@ -774,5 +838,11 @@ export default {
   .pd20{
     padding-left: 20px;
     padding-right: 20px;
+  }
+  .q-dark{
+    /deep/ .copy-link-button{
+      background-color: #04111F !important;
+      border: 1px solid #627797 !important;
+    }
   }
 </style>

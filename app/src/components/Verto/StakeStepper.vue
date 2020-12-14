@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
     <div class="chain-tools-wrapper">
       <!-- <q-toggle v-model="active" label="Active" /> -->
       <div class="chain-tools-wrapper--list open">
@@ -8,6 +8,7 @@
             <q-tabs
               v-model="tab"
               dense
+              :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
               class="text-grey"
               active-color="primary"
               indicator-color="primary"
@@ -29,6 +30,7 @@
                     color="primary"
                     animated
                     flat
+                    :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
                   >
                     <q-step title="Choose an account"
                       :name="0"
@@ -36,7 +38,7 @@
                       :done="step > 0"
                     >
                       <q-select
-                          light
+                          :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
                           separator
                           rounded
                           outlined
@@ -179,15 +181,15 @@
                                 <span class="--title row text-h6"> Amount to stake </span>
                                 <span class="--amount row text-h4"> {{  sendAmount }} {{ params.tokenID.toUpperCase() }}</span>
                                 <q-input
+                                 :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
                                   v-model="sendAmount"
                                   type="number"
                                   :suffix="params.tokenID.toUpperCase()"
-                                  light
                                   rounded
                                   outlined
                                   class="--input"
                                   @input="changeAmount()"
-                                  :rules="[val => val >= 1000 || '1000 VTX Minimum']"
+                                  :rules="[val => val >= 10000 || '10000 VTX Minimum']"
                                 />
                                 <br>
                               </div>
@@ -204,13 +206,12 @@
                           </div>
                         </div>
                       </div>
-                      <q-stepper-navigation class="flex justify-end" v-show="sendAmount >= 1000">
+                      <q-stepper-navigation class="flex justify-end" v-show="sendAmount >= 10000">
                         <q-btn @click="step = 2" v-if="condition === 1" unelevated color="deep-purple-14" class="--next-btn" rounded :label="`Get ${ params.tokenID.toUpperCase() }`" />
                         <q-btn @click="step = 2" v-if="condition === 2" unelevated color="deep-purple-14" class="--next-btn" rounded label="Get EOS account" />
                         <q-btn @click="step = 2" v-if="condition === 3" unelevated color="deep-purple-14" class="--next-btn" rounded label="Next" />
                       </q-stepper-navigation>
                     </q-step>
-
                     <q-step v-if="isPrivateKeyEncrypted" title="Sign & Submit"
                       :name="2"
                       prefix="2"
@@ -222,7 +223,7 @@
                         <div class="text-h4 --subtitle">Enter your password to sign the transaction.</div>
                         <q-input
                           v-model="privateKeyPassword"
-                          light
+                          :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
                           rounded
                           outlined
                           class="--input"
@@ -247,7 +248,6 @@
                         <q-btn @click="sendTransaction()" color="deep-purple-14" class="--next-btn" rounded label="Submit" />
                       </q-stepper-navigation>
                     </q-step>
-
                     <q-step v-else title="Confirm & Submit"
                       :name="2"
                       prefix="2"
@@ -257,13 +257,11 @@
 
                       <div class="text-black">
                         <div class="text-h4 --subtitle">Are you sure?</div>
-
                       </div>
                       <q-stepper-navigation class="flex justify-end">
                         <q-btn @click="sendTransaction()" color="deep-purple-14" class="--next-btn" rounded label="Submit" />
                       </q-stepper-navigation>
                     </q-step>
-
                     <q-step title="Result"
                       :name="4"
                       prefix="3"
@@ -298,9 +296,9 @@
                           <div class="col">Amount: <br> <strong>{{stake.stake_amount}} VTX <q-icon class="q-mb-xs" :name="'img:' + currentAccount.icon" />
                           </strong></div>
                           <div class="col">Period: <br> <strong>{{stake.stake_period}} Days</strong></div>
-                          <div class="col mobile-only">Time left: <br> <strong>{{stake.time_left}}</strong></div>
-                          <div class="col desktop-only">Time left: <br>
-                            <q-linear-progress rounded stripe size="25px" :value="(1 / stake.stake_period )" color="deep-purple-14">
+                          <div class="col mobile-only">{{stake.time_left > 0 ? 'Time left' : 'Stake period ended'}}: <br> <strong>{{stake.time_left}}</strong></div>
+                          <div class="col desktop-only">{{stake.time_left > 0 ? 'Time left' : 'Stake period ended'}}: <br>
+                            <q-linear-progress rounded stripe size="25px" :value="( (stake.stake_period - stake.time_left) / stake.stake_period )" color="deep-purple-14">
                               <div class="absolute-full flex flex-center">
                                 <q-badge color="white" text-color="black" :label="(stake.time_left) + ' Days'" />
                               </div>
@@ -330,7 +328,6 @@ import { date } from 'quasar'
 import { userError } from '@/util/errorHandler'
 import EosWrapper from '@/util/EosWrapper'
 const eos = new EosWrapper()
-
 export default {
   name: 'VTXConverter',
   data () {
@@ -381,6 +378,7 @@ export default {
     let exchangeNotif = document.querySelector('.exchange-notif'); if (exchangeNotif !== null) { exchangeNotif.querySelector('.q-btn').dispatchEvent(new Event('click')) }
     // console.log('---this.wallet---', this.wallet)
     if (this.wallet) {
+      console.log('this.wallet, this.wallet, this.wallet', this.wallet)
       this.currentAccount = this.wallet
       this.params = {
         chainID: this.currentAccount.chain,
@@ -394,32 +392,43 @@ export default {
         w.chain === 'eos' ? w.name.toLowerCase() === this.params.accountName : w.key === this.params.accountName)
       )
     }
-
     // console.log('this.currentAccount ----------------- ', this.currentAccount)
-
+    let stepParam = this.$route.params.step
+    if (this.stakes.length === 0) {
+      this.tab = 'stake'
+    }
+    if (stepParam !== undefined) {
+      // console.log('step staking = ', stepParam)
+      let highestVTXAccount = this.$store.state.highestVTXAccount.wallet
+      this.$store.state.currentwallet.wallet = highestVTXAccount
+      this.currentAccount = highestVTXAccount
+      this.params = this.$store.state.highestVTXAccount.params
+      this.slider = 100
+      this.changeSlider()
+      this.stakePeriod = 10
+      this.changeSlider()
+      this.step = parseInt(stepParam)
+      this.tab = 'stake'
+    }
     if (eos.isPrivKeyValid(this.currentAccount.privateKey)) {
       this.privateKey.key = this.currentAccount.privateKey
       this.isPrivateKeyEncrypted = false
     } else {
       this.isPrivateKeyEncrypted = true
     }
-
     if (this.params.tokenID === 'vtx' && this.currentAccount < 1000) {
       this.condition = 1
     } else if (this.params.tokenID === 'eos' && this.currentAccount <= 0) {
       this.condition = 1
     }
-
     let stakedAmounts = 0
     if (this.params.tokenID === 'vtx') {
       let totalBalance = (await eos.getCurrencyBalanceP('vtxstake1111', 'volentixgsys')).toString().split(' ')[0]
       let globalAmnts = (await eos.getTable('vtxstake1111', 'vtxstake1111', 'globalamnts'))[0]
       let totalStake = globalAmnts.stake.split(' ')[0]
       let totalSubsidy = globalAmnts.subsidy.split(' ')[0]
-
       this.allocatable = +totalBalance - (+totalStake + +totalSubsidy)
       // console.log('allocatable', this.allocatable)
-
       this.stakes = await eos.getTable('vtxstake1111', this.params.accountName, 'accounts')
       this.stakes.map(s => {
         // console.log('s', s)
@@ -432,26 +441,9 @@ export default {
       })
       this.currentAccount.staked = stakedAmounts
     }
-
     // console.log('stakes', this.stakes)
-    if (this.stakes.length === 0) {
-      this.tab = 'stake'
-    }
   },
   async mounted () {
-    let stepParam = this.$route.params.step
-    if (stepParam !== undefined) {
-      // console.log('step staking = ', stepParam)
-      let highestVTXAccount = this.$store.state.highestVTXAccount.wallet
-      this.$store.state.currentwallet.wallet = this.$store.state.highestVTXAccount.wallet
-      this.currentAccount = highestVTXAccount
-      this.params = this.$store.state.highestVTXAccount.params
-      this.slider = 100
-      this.changeSlider()
-      this.stakePeriod = 10
-      this.changeSlider()
-      this.step = parseInt(stepParam)
-    }
   },
   methods: {
     sliderToPercent (percent) {
@@ -481,7 +473,6 @@ export default {
       if (this.sendAmount > +this.currentAccount.amount) {
         this.sendAmount = +this.currentAccount.amount
       }
-
       if (this.sendAmount >= 0) {
         this.slider = Math.round(10000 * (this.sendAmount / +this.currentAccount.amount)) / 100
       } else {
@@ -491,10 +482,8 @@ export default {
     },
     checkAmount () {
       let stake_per = Math.round((0.01 + (0.001 * this.stakePeriod)) * 1000) / 1000
-
       if (+this.sendAmount > 0.0 && +this.sendAmount <= +this.currentAccount.amount) {
         this.slider = Math.round(10000 * (this.sendAmount / +this.currentAccount.amount)) / 100
-
         if (this.sendAmount >= 1000) {
           this.progColor = 'green'
           // let sep = ' , '
@@ -520,7 +509,6 @@ export default {
     async sendTransaction () {
       try {
         this.step = 4
-
         let memo = this.stakePeriod * 30
         this.formatedAmount = this.formatAmountString()
         const transaction = await eos.transferToken(
@@ -531,7 +519,6 @@ export default {
           memo.toString(),
           this.privateKey.key
         )
-
         this.transactionError = false
         this.transactionId = transaction.transaction_id
         this.SuccessMessage = 'Congratulations, your transactions have been recorded on the blockchain. You can check it on this <a href="https://bloks.io/transaction/' + this.transactionId + '" target="_blank">block explorer</a>'
@@ -572,7 +559,6 @@ export default {
     formatAmountString () {
       let numberOfDecimals = 0
       let stringAmount = (Math.round(+this.sendAmount * Math.pow(10, this.currentAccount.precision)) / Math.pow(10, this.currentAccount.precision)).toString()
-
       const amountParsed = stringAmount.split('.')
       if (amountParsed && amountParsed.length > 1) {
         numberOfDecimals = amountParsed[1].length
@@ -1032,5 +1018,27 @@ export default {
     overflow: hidden;
     width: 100%;
     max-width: 145px;
+  }
+  .dark-theme{
+    .vtx-converter-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor{
+      background-color: #04111F;
+    }
+    .vtx-converter-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor--title{
+      color: #FFF;
+    }
+    .vtx-converter-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor .--subtitle{
+        color: #CCC;
+    }
+    .vtx-converter-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor .--amount{
+      color: #FFF !important;
+    }
+  }
+  /deep/ .q-stepper{
+    &.q-dark{
+      background: #04111F;
+      .q-stepper__title{
+        color: #CCC !important;
+      }
+    }
   }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="text-black bg-white">
+  <q-page :class="{'dark-theme': $store.state.lightMode.lightMode === 'true', 'text-black bg-white': $store.state.lightMode.lightMode === 'false'}">
     <div v-if="step===1" class="standard-content">
       <h2 class="standard-content--desc"></h2>
       <div class="standard-content--body">
@@ -25,6 +25,7 @@
             <q-btn round flat unelevated text-color="grey" class="btn-copy" @click="copy2clip(mnemonic)" icon="o_file_copy" />
           </h4>
           <q-input
+            :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
             ref="mnemonic"
             type="textarea"
             v-model="mnemonic"
@@ -44,7 +45,7 @@
         <div v-if="!vertoPassword">
           <q-input
             v-model="vertoPasswordTemp"
-            light
+            :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
             color="green"
             label="Verto Password"
             debounce="500"
@@ -87,6 +88,7 @@
             Mnemonic
           </h4>
           <q-input
+            :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
             ref="mnemonic"
             type="textarea"
             @input="validateMnemonic()"
@@ -98,7 +100,7 @@
       </div>
       <div class="standard-content--footer">
          <q-btn flat class="action-link back" color="black" text-color="white" label="Back" @click="step=1" />
-         <q-btn class="action-link next" color="deep-purple-14" text-color="white" label="Next" @click="saveMnemonic()" :disable="!mnemonicValidated" />
+         <q-btn class="action-link next" color="deep-purple-14" text-color="white" label="Next" @click="saveMnemonic(true)" :disable="!mnemonicValidated" />
       </div>
     </div>
   </q-page>
@@ -166,16 +168,17 @@ export default {
 
       this.step = 2
     },
-    async saveMnemonic () {
+    async saveMnemonic (isRecovering = false) {
       if (this.goodPassword && (this.$store.state.settings.rightOrder || this.step === 4)) {
         // console.log('we are good with order')
 
         if (this.vertoPassword) {
           // console.log('in saveMnemonic with password')
           this.config.mnemonic = this.mnemonic
-          await this.$configManager.updateConfig(this.vertoPassword, this.config)
+          let updateReturn = await this.$configManager.updateConfig(this.vertoPassword, this.config)
           const keys = await HD.Wallet('eos')
-          const result = await this.$configManager.saveWalletAndKey('EOS Key - HD', this.vertoPassword, null, keys.publicKey, keys.privateKey, 'verto', 'mnemonic')
+          const result = await this.$configManager.saveWalletAndKey('EOS Key', this.vertoPassword, null, keys.publicKey, keys.privateKey, 'verto', 'mnemonic')
+          console.log(keys, 'keys', result, 'result', this.mnemonic, 'this.mnemonic', 'updateReturn', updateReturn)
 
           if (result && result.success) {
           //   try {
@@ -190,7 +193,7 @@ export default {
             this.$q.notify({ color: 'positive', message: 'EOS Keys created' })
           //   this.$router.push('wallet')
           }
-          this.$router.push('cruxpay')
+          this.$router.push({ path: '/create-keys' })
         }
       } else {
         this.$q.notify({ color: 'negative', message: 'The words are not yet in the right order' })
@@ -320,6 +323,17 @@ export default {
       // }
     }
 
+  }
+}
+.dark-theme{
+  background: #04111F !important;
+  ul{
+    li{
+      color: #FFF;
+    }
+  }
+  .standard-content--title{
+    color: #FFF;
   }
 }
 </style>

@@ -1,76 +1,228 @@
 <template>
-  <q-page class="column text-black bg-grey-12"  :class="screenSize > 1024 ? 'desktop-marg': 'mobile-pad'">
-    <div class="desktop-version" v-if="screenSize > 1024">
-      <div class="row">
-        <div class="col col-md-3">
-          <div class="wallets-container">
-            <profile-header :isMobile="false" class="marg" version="type2222" />
-            <wallets :isMobile="false" :showWallets="false" :isWalletsPage="false" :isWalletDetail="false" />
-            <!-- <img src="statics/prototype_screens/wallets.jpg" alt=""> -->
+  <q-page class="column import-private-key" :class="{'desktop-marg':screenSize > 1024, 'mobile-pad': screenSize < 1024,'dark-theme': $store.state.lightMode.lightMode === 'true', 'text-black bg-grey-12': $store.state.lightMode.lightMode === 'false'}">
+    <div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+      <div class="desktop-version" v-if="screenSize > 1024">
+        <div class="row">
+          <div class="col col-md-3">
+            <div class="wallets-container">
+              <profile-header :isMobile="false" class="marg" version="type2222" />
+              <wallets :isMobile="false" :showWallets="false" :isWalletsPage="false" :isWalletDetail="false" />
+              <!-- <img src="statics/prototype_screens/wallets.jpg" alt=""> -->
+            </div>
           </div>
-        </div>
-        <div class="col col-md-9">
-          <div class="desktop-card-style private-key q-mb-sm">
-            <div class="chain-tools-wrapper">
-              <div class="standard-content">
-                  <h2 class="standard-content--title flex justify-start items-center">
-                    {{ currentWallet.privateKey ?  'Show private key' : 'Add private key' }}
-                  </h2>
-              </div>
-              <div class="chain-tools-wrapper--list open">
-                  <div class="list-wrapper">
-                      <div class="list-wrapper--chain__eos-to-vtx-convertor">
-                        <q-stepper v-if="currentWallet.privateKey" v-model="step2" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
-                          <q-step title="Private key" :name="1" icon="fas fa-check-double" :done="step2 > 1">
-                              <div class="text-black" style="margin-left: -35px">
-                                <br>
-                                <q-input readonly v-model="currentWallet.privateKey" rounded class="input-input pr80" outlined color="purple" type="text">
-                                  <template v-slot:append>
-                                    <div class="flex justify-end">
-                                      <q-btn flat unelevated text-color="grey" @click="copyToClipboard(currentWallet.privateKey , 'Private Key')" round class="btn-copy" icon="o_file_copy" />
-                                    </div>
-                                  </template>
-                                </q-input>
-                                <br>
-                              </div>
-                          </q-step>
-                        </q-stepper>
-                        <q-stepper v-else v-model="step" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
-                            <!--
-                            1. Paid to
-                            -->
-                            <q-step title="Choose File" :name="1" prefix="1" :done="step > 1">
-                                <div class="text-black">
-                                    <div class="text-h4 --subtitle">
-                                        <ul>
-                                            <li><span>Choose Private Key Encrypted File</span></li>
-                                        </ul>
-                                    </div>
-                                    <div class="flex full-width file-select-wrapper flex-center q-pa-sm">
-                                        <file-select @input="checksFile" v-model="file" />
-                                        <q-icon name="cloud_upload" class="icon-upload" />
-                                    </div>
-                                    <div v-show="passwordFileError" class="text-h6 text-uppercase text-red q-pa-md">
-                                        Error Getting File
-                                    </div>
-                                    <q-stepper-navigation v-show="gotfile && !passwordFileError" class="flex justify-end">
-                                        <q-btn @click="gottoFilePassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('next')" />
-                                    </q-stepper-navigation>
+          <div class="col col-md-9">
+            <div class="desktop-card-style private-key q-mb-sm" :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+              <div class="chain-tools-wrapper">
+                <div class="standard-content">
+                    <h2 class="standard-content--title flex justify-start items-center">
+                      {{ currentWallet.privateKey ?  'Show private key' : 'Add private key' }}
+                    </h2>
+                </div>
+                <div class="chain-tools-wrapper--list open">
+                    <div class="list-wrapper">
+                        <div class="list-wrapper--chain__eos-to-vtx-convertor">
+                          <q-stepper :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-if="currentWallet.privateKey" v-model="step2" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
+                            <q-step title="Private key" :name="1" icon="fas fa-check-double" :done="step2 > 1">
+                                <div class="text-black" style="margin-left: -35px">
+                                  <br>
+                                  <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" readonly v-model="currentWallet.privateKey" rounded class="input-input pr80" outlined color="purple" type="text">
+                                    <template v-slot:append>
+                                      <div class="flex justify-end">
+                                        <q-btn flat unelevated text-color="grey" @click="copyToClipboard(currentWallet.privateKey , 'Private Key')" round class="btn-copy" icon="o_file_copy" />
+                                      </div>
+                                    </template>
+                                  </q-input>
+                                  <br>
                                 </div>
                             </q-step>
-                            <!--
-                            2
-                            -->
-                            <q-step :name="2" title="Validate" icon="fas fa-check-double" :done="step>2">
-                                <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
+                          </q-stepper>
+                          <q-stepper v-else :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-model="step" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
+                              <!--
+                              1. Paid to
+                              -->
+                              <q-step title="Choose File" :name="1" prefix="1" :done="step > 1">
+                                  <div class="text-black">
+                                      <div class="text-h4 --subtitle">
+                                          <ul>
+                                              <li><span>Choose Private Key Encrypted File</span></li>
+                                          </ul>
+                                      </div>
+                                      <div class="flex full-width file-select-wrapper flex-center q-pa-sm">
+                                          <file-select @input="checksFile" v-model="file" />
+                                          <q-icon :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" name="cloud_upload" class="icon-upload" />
+                                      </div>
+                                      <div v-show="passwordFileError" class="text-h6 text-uppercase text-red q-pa-md">
+                                          Error Getting File
+                                      </div>
+                                      <q-stepper-navigation v-show="gotfile && !passwordFileError" class="flex justify-end">
+                                          <q-btn @click="gottoFilePassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('next')" />
+                                      </q-stepper-navigation>
+                                  </div>
+                              </q-step>
+                              <!--
+                              2
+                              -->
+                              <q-step :name="2" title="Validate" icon="fas fa-check-double" :done="step>2">
+                                  <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
+                                  <q-input
+                                      v-model="privateKeyPassword"
+                                      :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                                      debounce="500"
+                                      rounded outlined color="purple"
+                                      label="Private Key Password"
+                                      @input="checkPrivateKeyPassword"
+                                      @keyup.enter="gotoVertoPassword()"
+                                      :type="isPwd ? 'password' : 'text'"
+                                  >
+                                      <template v-slot:append>
+                                      <q-icon
+                                          :name="isPwd ? 'visibility_off' : 'visibility'"
+                                          class="cursor-pointer"
+                                          @click="isPwd = !isPwd"
+                                      />
+                                      </template>
+                                  </q-input>
+                                  <div v-show="invalidPrivateKeyPassword" class="text-h6 text-uppercase text-red q-pa-md text-center">
+                                      Password Incorrect
+                                  </div>
+                                  <q-stepper-navigation v-show="privateKeyPasswordValid" class="flex justify-end">
+                                      <q-btn @click="gotoVertoPassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
+                                  </q-stepper-navigation>
+                              </q-step>
+                              <!--
+                              3
+                              -->
+                              <q-step :name="3" title="Verto Password" icon="fas fa-lock" :done="step>3">
+                                  <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
+                                      <q-input
+                                          v-model="vertoPassword"
+                                          :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                                          debounce="500"
+                                          rounded outlined color="purple"
+                                          label="Verto Password"
+                                          @input="checkVertoPassword"
+                                          @keyup.enter="submit()"
+                                          :type="isPwd ? 'password' : 'text'"
+                                      >
+                                          <template v-slot:append>
+                                          <q-icon
+                                              :name="isPwd ? 'visibility_off' : 'visibility'"
+                                              class="cursor-pointer"
+                                              @click="isPwd = !isPwd"
+                                          />
+                                          </template>
+                                      </q-input>
+
+                                  <div v-show="vertoPasswordWrong" class="text-h6 text-uppercase text-red q-pa-md text-center">
+                                      Password Incorrect
+                                  </div>
+                                  <q-stepper-navigation v-show="vertoPassordValid" class="flex justify-end">
+                                      <q-btn @click="submit()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
+                                  </q-stepper-navigation>
+                              </q-step>
+                          </q-stepper>
+                        </div>
+                        <br><br><br>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else>
+        <div class="chain-tools-wrapper">
+          <div class="standard-content">
+              <h2 class="standard-content--title flex justify-center">
+                  <q-btn flat unelevated class="btn-align-left" :to="goBack" :text-color="$store.state.lightMode.lightMode === 'false' ? 'black':'white'" icon="keyboard_backspace" />
+                    {{ currentWallet.privateKey ?  'Show private key' : 'Add private key' }}
+              </h2>
+              <div class="privatekey_bg flex flex-center"><img src="statics/privatekey_bg.svg" alt=""></div>
+          </div>
+          <div class="chain-tools-wrapper--list open">
+              <div class="list-wrapper">
+                  <div class="list-wrapper--chain__eos-to-vtx-convertor">
+                    <q-stepper v-if="currentWallet.privateKey" :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-model="step2" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
+                      <q-step title="Private key" :name="1" icon="fas fa-check-double" :done="step2 > 1">
+                          <div class="text-black" style="margin-left: -35px">
+                            <br>
+                            <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" readonly v-model="currentWallet.privateKey" rounded class="input-input pr80" outlined color="purple" type="text">
+                              <template v-slot:append>
+                                <div class="flex justify-end">
+                                  <q-btn flat unelevated text-color="grey" @click="copyToClipboard(currentWallet.privateKey , 'Private Key')" round class="btn-copy" icon="o_file_copy" />
+                                </div>
+                              </template>
+                            </q-input>
+                            <br>
+                          </div>
+                      </q-step>
+                    </q-stepper>
+                    <q-stepper v-else :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-model="step" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
+                        <!--
+                        1. Paid to
+                        -->
+                        <q-step title="Choose File" :name="1" prefix="1" :done="step > 1">
+                            <div class="text-black">
+                                <div class="text-h4 --subtitle">
+                                    <ul>
+                                        <li><span>Choose Private Key Encrypted File</span></li>
+                                    </ul>
+                                </div>
+                                <div class="flex full-width file-select-wrapper flex-center q-pa-sm">
+                                    <file-select @input="checksFile" v-model="file" />
+                                    <q-icon :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" name="cloud_upload" class="icon-upload" />
+                                </div>
+                                <div v-show="passwordFileError" class="text-h6 text-uppercase text-red q-pa-md">
+                                    Error Getting File
+                                </div>
+                                <q-stepper-navigation v-show="gotfile && !passwordFileError" class="flex justify-end">
+                                    <q-btn @click="gottoFilePassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('next')" />
+                                </q-stepper-navigation>
+                            </div>
+                        </q-step>
+                        <!--
+                        2
+                        -->
+                        <q-step :name="2" title="Validate" icon="fas fa-check-double" :done="step>2">
+                            <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
+                            <q-input
+                                v-model="privateKeyPassword"
+                                :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                                debounce="500"
+                                rounded outlined color="purple"
+                                label="Private Key Password"
+                                @input="checkPrivateKeyPassword"
+                                @keyup.enter="gotoVertoPassword()"
+                                :type="isPwd ? 'password' : 'text'"
+                            >
+                                <template v-slot:append>
+                                <q-icon
+                                    :name="isPwd ? 'visibility_off' : 'visibility'"
+                                    class="cursor-pointer"
+                                    @click="isPwd = !isPwd"
+                                />
+                                </template>
+                            </q-input>
+                            <div v-show="invalidPrivateKeyPassword" class="text-h6 text-uppercase text-red q-pa-md text-center">
+                                Password Incorrect
+                            </div>
+                            <q-stepper-navigation v-show="privateKeyPasswordValid" class="flex justify-end">
+                                <q-btn @click="gotoVertoPassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
+                            </q-stepper-navigation>
+                        </q-step>
+                        <!--
+                        3
+                        -->
+                        <q-step :name="3" title="Verto Password" icon="fas fa-lock" :done="step>3">
+                            <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
                                 <q-input
-                                    v-model="privateKeyPassword"
-                                    light
+                                    v-model="vertoPassword"
+                                    :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
                                     debounce="500"
                                     rounded outlined color="purple"
-                                    label="Private Key Password"
-                                    @input="checkPrivateKeyPassword"
-                                    @keyup.enter="gotoVertoPassword()"
+                                    label="Verto Password"
+                                    @input="checkVertoPassword"
+                                    @keyup.enter="submit()"
                                     :type="isPwd ? 'password' : 'text'"
                                 >
                                     <template v-slot:append>
@@ -81,169 +233,19 @@
                                     />
                                     </template>
                                 </q-input>
-                                <div v-show="invalidPrivateKeyPassword" class="text-h6 text-uppercase text-red q-pa-md text-center">
-                                    Password Incorrect
-                                </div>
-                                <q-stepper-navigation v-show="privateKeyPasswordValid" class="flex justify-end">
-                                    <q-btn @click="gotoVertoPassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
-                                </q-stepper-navigation>
-                            </q-step>
-                            <!--
-                            3
-                            -->
-                            <q-step :name="3" title="Verto Password" icon="fas fa-lock" :done="step>3">
-                                <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
-                                    <q-input
-                                        v-model="vertoPassword"
-                                        light
-                                        debounce="500"
-                                        rounded outlined color="purple"
-                                        label="Verto Password"
-                                        @input="checkVertoPassword"
-                                        @keyup.enter="submit()"
-                                        :type="isPwd ? 'password' : 'text'"
-                                    >
-                                        <template v-slot:append>
-                                        <q-icon
-                                            :name="isPwd ? 'visibility_off' : 'visibility'"
-                                            class="cursor-pointer"
-                                            @click="isPwd = !isPwd"
-                                        />
-                                        </template>
-                                    </q-input>
 
-                                <div v-show="vertoPasswordWrong" class="text-h6 text-uppercase text-red q-pa-md text-center">
-                                    Password Incorrect
-                                </div>
-                                <q-stepper-navigation v-show="vertoPassordValid" class="flex justify-end">
-                                    <q-btn @click="submit()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
-                                </q-stepper-navigation>
-                            </q-step>
-                        </q-stepper>
-                      </div>
-                      <br><br><br>
+                            <div v-show="vertoPasswordWrong" class="text-h6 text-uppercase text-red q-pa-md text-center">
+                                Password Incorrect
+                            </div>
+                            <q-stepper-navigation v-show="vertoPassordValid" class="flex justify-end">
+                                <q-btn @click="submit()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
+                            </q-stepper-navigation>
+                        </q-step>
+                    </q-stepper>
                   </div>
+                  <br><br><br>
               </div>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div v-else>
-      <div class="chain-tools-wrapper">
-        <div class="standard-content">
-            <h2 class="standard-content--title flex justify-center">
-                <q-btn flat unelevated class="btn-align-left" :to="goBack" text-color="black" icon="keyboard_backspace" />
-                  {{ currentWallet.privateKey ?  'Show private key' : 'Add private key' }}
-            </h2>
-            <div class="privatekey_bg flex flex-center"><img src="statics/privatekey_bg.svg" alt=""></div>
-        </div>
-        <div class="chain-tools-wrapper--list open">
-            <div class="list-wrapper">
-                <div class="list-wrapper--chain__eos-to-vtx-convertor">
-                  <q-stepper v-if="currentWallet.privateKey" v-model="step2" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
-                    <q-step title="Private key" :name="1" icon="fas fa-check-double" :done="step2 > 1">
-                        <div class="text-black" style="margin-left: -35px">
-                          <br>
-                          <q-input readonly v-model="currentWallet.privateKey" rounded class="input-input pr80" outlined color="purple" type="text">
-                            <template v-slot:append>
-                              <div class="flex justify-end">
-                                <q-btn flat unelevated text-color="grey" @click="copyToClipboard(currentWallet.privateKey , 'Private Key')" round class="btn-copy" icon="o_file_copy" />
-                              </div>
-                            </template>
-                          </q-input>
-                          <br>
-                        </div>
-                    </q-step>
-                  </q-stepper>
-                  <q-stepper v-else v-model="step" done-color="green" ref="stepper" alternative-labels vertical color="primary" animated flat >
-                      <!--
-                      1. Paid to
-                      -->
-                      <q-step title="Choose File" :name="1" prefix="1" :done="step > 1">
-                          <div class="text-black">
-                              <div class="text-h4 --subtitle">
-                                  <ul>
-                                      <li><span>Choose Private Key Encrypted File</span></li>
-                                  </ul>
-                              </div>
-                              <div class="flex full-width file-select-wrapper flex-center q-pa-sm">
-                                  <file-select @input="checksFile" v-model="file" />
-                                  <q-icon name="cloud_upload" class="icon-upload" />
-                              </div>
-                              <div v-show="passwordFileError" class="text-h6 text-uppercase text-red q-pa-md">
-                                  Error Getting File
-                              </div>
-                              <q-stepper-navigation v-show="gotfile && !passwordFileError" class="flex justify-end">
-                                  <q-btn @click="gottoFilePassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('next')" />
-                              </q-stepper-navigation>
-                          </div>
-                      </q-step>
-                      <!--
-                      2
-                      -->
-                      <q-step :name="2" title="Validate" icon="fas fa-check-double" :done="step>2">
-                          <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
-                          <q-input
-                              v-model="privateKeyPassword"
-                              light
-                              debounce="500"
-                              rounded outlined color="purple"
-                              label="Private Key Password"
-                              @input="checkPrivateKeyPassword"
-                              @keyup.enter="gotoVertoPassword()"
-                              :type="isPwd ? 'password' : 'text'"
-                          >
-                              <template v-slot:append>
-                              <q-icon
-                                  :name="isPwd ? 'visibility_off' : 'visibility'"
-                                  class="cursor-pointer"
-                                  @click="isPwd = !isPwd"
-                              />
-                              </template>
-                          </q-input>
-                          <div v-show="invalidPrivateKeyPassword" class="text-h6 text-uppercase text-red q-pa-md text-center">
-                              Password Incorrect
-                          </div>
-                          <q-stepper-navigation v-show="privateKeyPasswordValid" class="flex justify-end">
-                              <q-btn @click="gotoVertoPassword()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
-                          </q-stepper-navigation>
-                      </q-step>
-                      <!--
-                      3
-                      -->
-                      <q-step :name="3" title="Verto Password" icon="fas fa-lock" :done="step>3">
-                          <q-btn flat @click="$refs.stepper.previous()" unelevated icon="keyboard_arrow_up" color="primary" class="--back-btn"/>
-                              <q-input
-                                  v-model="vertoPassword"
-                                  light
-                                  debounce="500"
-                                  rounded outlined color="purple"
-                                  label="Verto Password"
-                                  @input="checkVertoPassword"
-                                  @keyup.enter="submit()"
-                                  :type="isPwd ? 'password' : 'text'"
-                              >
-                                  <template v-slot:append>
-                                  <q-icon
-                                      :name="isPwd ? 'visibility_off' : 'visibility'"
-                                      class="cursor-pointer"
-                                      @click="isPwd = !isPwd"
-                                  />
-                                  </template>
-                              </q-input>
-
-                          <div v-show="vertoPasswordWrong" class="text-h6 text-uppercase text-red q-pa-md text-center">
-                              Password Incorrect
-                          </div>
-                          <q-stepper-navigation v-show="vertoPassordValid" class="flex justify-end">
-                              <q-btn @click="submit()" color="deep-purple-14" class="--next-btn" rounded :label="$t('SaveYourKeys.create')" />
-                          </q-stepper-navigation>
-                      </q-step>
-                  </q-stepper>
-                </div>
-                <br><br><br>
-            </div>
         </div>
       </div>
     </div>
@@ -291,8 +293,9 @@ export default {
     window.addEventListener('resize', this.getWindowWidth)
     let tableData = await this.$store.state.wallets.tokens
     let params = this.$store.state.currentwallet.params
+    console.log(this.$store.state.currentwallet, tableData)
     this.currentWallet = tableData.find(w => w.chain === params.chainID && w.type === params.tokenID && (
-      w.chain === 'eos' ? w.name.toLowerCase() === params.accountName : w.key === params.accountName)
+      w.chain === 'eos' ? w.name.toLowerCase() === params.accountName : w.name === params.accountName)
     )
     // this.wallet = this.$store.state.currentwallet.wallet
     this.goBack = `/verto/wallets/${params.chainID}/${params.tokenID}/${params.accountName}`
@@ -427,9 +430,29 @@ export default {
   .desktop-version{
     background: #E7E8E8;
     padding-top: 13vh;
-    padding-left: 12vh;
-    // padding-bottom: 50px;
+    padding-left: 20vh;
+    padding-bottom: 50px;
     padding-right: 2%;
+    @media screen and (min-width: 768px) {
+      padding-top: 11vh;
+      padding-bottom: 0px;
+    }
+  }
+  .dark-theme{
+    &.import-private-key{
+      background: #04111F !important;
+    }
+    .desktop-version{
+        background: #04111F;
+        padding-bottom: 8px;
+        min-height: 102vh;
+        overflow: hidden;
+        position: relative;
+        scrollbar-width: 0px;
+        .col-title h4{
+            color: #FFF;
+        }
+    }
   }
   .desktop-card-style{
     height: 100%;
@@ -815,6 +838,54 @@ export default {
       span{
         color: #000;
         padding: 0px 15px;
+      }
+    }
+  }
+  /deep/ .q-stepper{
+    &.q-dark{
+      background: #04111F;
+      .q-stepper__title{
+        color: #CCC !important;
+      }
+    }
+  }
+  .dark-theme{
+    .chain-tools-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor{
+      background-color: #04111F;
+    }
+    .chain-tools-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor .--subtitle{
+        color: #CCC;
+    }
+    .chain-tools-wrapper--list .list-wrapper .select-input .q-field__control .q-field__native .q-item .q-item__section .q-item__label + .q-item__label{
+        color: #CCC !important;
+    }
+    .chain-tools-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor .--amount{
+      color: #FFF !important;
+    }
+    .chain-tools-wrapper--list .list-wrapper--chain__eos-to-vtx-convertor .--subtitle ul li span{
+      color: #CCC;
+    }
+    /deep/ .file-select-wrapper {
+      .file-select > .select-button span{
+        color: #FFF;
+      }
+      .file-select > .select-button{
+        background-color: #04111F !important;
+        border: 1px solid #627797;
+      }
+    }
+    .standard-content--title{
+      color: #FFF;
+    }
+}
+  /deep/ .q-stepper{
+    &.q-dark{
+      background: #04111F;
+      .q-tab-panels{
+        background: #04111F;
+      }
+      .q-stepper__title{
+        color: #CCC !important;
       }
     }
   }

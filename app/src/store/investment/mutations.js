@@ -5,13 +5,33 @@ export function someMutation (state) {
 
 export const setSelectedPool = (state, pool) => {
   state.selectedPool = pool
-  console.log(pool, 'pool')
 }
 export const setPools = (state, pools) => {
   state.pools = pools
 }
+export const setEOSPools = (state, pools) => {
+  state.eosPools = pools
+}
+export const updateEOSPools = (state, pool) => {
+  state.eosPools.push(pool)
+}
+export const setSelectedEOSPool = (state, pool) => {
+  state.selectedEOSPool = pool
+  console.log(pool, 'pool-')
+}
+export const updateTestnetEOSInvestments = (state, data) => {
+  state.testnetEOSInvestments.push(data)
+}
+
 export const updatePools = (state, pool) => {
-  state.pools.push(pool)
+  let volume = parseInt(pool.volume)
+  if (pool.liquidity !== 0 && volume !== 0 && !isNaN(volume)) {
+    state.pools.push(pool)
+    state.pools = state.pools.sort((a, b) => parseInt(b.liquidity) - parseInt(a.liquidity)).map((o, index) => {
+      o.index = index
+      return o
+    })
+  }
 }
 export const setTokens = (state, tokens) => {
   state.zapperTokens = tokens
@@ -22,7 +42,9 @@ export const updateGasPrice = (state, gasPrice) => {
 export const setMetamaskConnectionStatus = (state, status) => {
   state.metamaskConnected = status
 }
-
+export const setStakeData = (state, index) => {
+  state.stakeData = state.investmentOpportunities[index]
+}
 export const getRois = (state, updated) => {
   var grossROI = 0, netROI = 0
   let index = state.pools.findIndex(o => o.contractAddress === updated.contractAddress)
@@ -62,7 +84,11 @@ export const setInvestments = (state, payload) => {
   state.investments = state.investments.concat(payload.pools ? payload.pools : payload).map((o, index) => {
     o.index = index
     return o
-  })
+  }).filter(o => !o.canStake)
+  state.investmentOpportunities = state.investmentOpportunities.concat(payload.pools ? payload.pools : payload).map((o, index) => {
+    o.index = index
+    return o
+  }).filter(o => o.canStake)
 }
 export const setTransactions = (state, payload) => {
   state.transactions = state.transactions.concat(payload.filter(item => !state.transactions.find(o => o.hash === item.hash))).map((o, index) => {
@@ -81,4 +107,10 @@ export const setDefaultAccount = (state, payload) => {
 }
 export const setTableLoadingStatus = (state, payload) => {
   state.tableLoading = payload
+}
+export const setEOSInvestments = (state, payload) => {
+  state.eosInvestments = payload.map((o, index) => {
+    o.index = index
+    return o
+  })
 }

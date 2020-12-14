@@ -1,51 +1,243 @@
 <template>
 <q-page class="text-black bg-white" :class="screenSize > 1024 ? 'desktop-marg': 'mobile-pad'">
-    <div class="desktop-version" v-if="screenSize > 1024">
-        <div class="row">
-            <div class="col-8 col-title">
-                <h4>Account overview</h4>
-            </div>
-            <div class="col-4">
-                <q-select color="primary" class="q-mb-md" @input="getAccountInformation({address:accountOption})" v-model="accountOption" :options="accountOptions" label="Change account">
-                    <template v-slot:append>
+
+<div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+
+    <q-dialog v-model="chooseAccount" persistent transition-show="scale" transition-hide="scale">
+      <q-card class="bg-grey-11 flex flex-center q-py-lg" style="width: 500px;">
+        <q-card-section>
+          <div class="text-h6">Choose your wallet</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+         <q-select style="width: 400px;" light separator rounded outlined class="select-input ellipsis mw200" @input="getAccountInformation({address:accountOption, chain:accountOption.chain})" v-model="accountOption" :options="accountOptions">
+                    <template v-slot:selected>
+                        <q-item v-if="accountOption">
+                            <q-item-section v-if="accountOption.image" avatar>
+                                <q-icon class="option--avatar" :name="'img:'+accountOption.image" />
+                            </q-item-section>
+                            <q-item-section>
+                                <q-item-label v-if="accountOption.usd">{{ accountOption.chain.toUpperCase() }} wallet - ${{ accountOption.usd.toFixed(4) }}</q-item-label>
+                                <q-item-label caption class="ellipsis mw200 q-pt-xs">{{ accountOption.value }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </template>
+
+                    <template v-slot:option="scope">
+                  <q-item
+                   class="custom-menu"
+
+                   v-bind="scope.itemProps"
+                   v-on="scope.itemEvents"
+                  >
+                   <q-item-section avatar>
+                    <q-icon
+                     :name="`img:${scope.opt.image}`"
+                    />
+                   </q-item-section>
+                   <q-item-section>
+                    <q-item-label
+                     v-html="scope.opt.label"
+                    />
+
+                    <q-item-label
+                     v-if="scope.opt.name"
+                     caption
+                     >{{ scope.opt.name }}</q-item-label>
+                     <q-item-label
+                     v-if="scope.opt.total"
+                     caption
+                     >${{ scope.opt.total.toFixed(2) }}</q-item-label>
+
+                   </q-item-section>
+                  </q-item>
+                 </template>
+                    <!-- <template v-slot:append>
                         <q-avatar>
                             <img src="https://www.volentix.io/statics/icons_svg/svg_logo.svg">
                         </q-avatar>
-                    </template>
+                    </template> -->
                 </q-select>
-            </div>
-            <div class="col col-md-5 q-pr-md">
-                <div class="desktop-card-style account-overview q-mb-md">
-                    <div class="row">
-                        <div class="col-8">
-                            <h4 class="q-pl-md">Available balances</h4>
-                            <div class="header-table-col row q-pl-md q-mb-md">
-                                <div class="col-5">
-                                    <h3>Token</h3>
-                                </div>
-                                <div class="col-4">
-                                    <h3>Balance</h3>
-                                </div>
-                            </div>
-                            <q-scroll-area :visible="true" class="q-pr-lg q-mb-md q-mr-sm" style="height: 230px;">
-                                <div v-for="(token, index) in ethTokens" :key="index" class="body-table-col border row items-center q-pl-md q-pb-sm q-pt-sm">
-                                    <div class="col-5 flex items-center">
-                                        <span class="token flex items-center">
-                                            <img :src="'https://files.coinswitch.co/public/coins/'+token.type+'.png'" class="q-mr-sm" alt=""> <strong>{{token.type}}</strong>
-                                        </span>
-                                    </div>
-                                    <div class="col-4 q-pl-sm">
-                                        <span class="balance">{{token.usd.toFixed(3)}} USD</span>
-                                    </div>
-                                </div>
-                            </q-scroll-area>
-                        </div>
-                        <div class="col-4">
-                            <img src="statics/liquidity_pool.png" class="full-width q-pt-sm" alt="">
-                        </div>
-                    </div>
-                </div>
-                <div class="desktop-card-style wallet-snapshot q-mb-md" style="background: url(statics/header_bg.png) no-repeat; background-position: 20% 75%; background-size: 100%;">
+        </q-card-section>
+         <q-card-section>
+          <q-btn label="Select wallet" color="primary" @click="chooseAccount = false"/>
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
+    <div class="desktop-version" v-if="screenSize > 1024">
+
+        <div class="text-h6 row flex flex-center" v-if="!accountOption">
+         NO EOS or ETH wallet available
+        </div>
+        <div class="row" v-else>
+    <q-splitter
+      v-model="splitterModel"
+      style="width:100%"
+    >
+
+      <template style="width:25%" v-slot:before>
+        <q-tabs
+          v-model="chain"
+          vertical
+            align="left"
+
+          inline-label
+        >
+         <q-btn-dropdown auto-close stretch flat label="More...">
+          <q-list class="text-center flex">
+            <q-item clickable @click="chain = 'eth';  switchChain() " :class="[chain == 'eth' ? 'bg-white' :'']">
+
+            <q-img src="https://files.coinswitch.co/public/coins/eth.png" style="width:20px;"/>
+
+              <q-item-section class="q-pl-sm">Ethereum</q-item-section>
+            </q-item>
+
+            <q-item clickable class="col" @click="chain = 'eos'; switchChain() " :class="[chain == 'eos' ? 'bg-white' :'']">
+              <q-img src="https://files.coinswitch.co/public/coins/eos.png" style="width:20px;"/>
+
+             <q-item-section class="q-pl-sm">EOS</q-item-section>
+            </q-item>
+          </q-list>
+        </q-btn-dropdown>
+
+          <q-btn-dropdown auto-close stretch flat>
+
+           <q-list class="text-left" separator>
+            <q-item clickable @click="menu = 'swap'" :class="[menu == 'swap' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Swap</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+             </q-item>
+              <q-item clickable @click="menu = 'add_liquidity'" :class="[menu == 'add_liquidity' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Add liquidity</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+             </q-item>
+            <q-item clickable @click="menu = 'liquidity'" :class="[menu == 'liquidity' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Liquidity Pools</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+        </q-item>
+        <q-item clickable @click="menu = 'investments'" :class="[menu == 'investments' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Investments</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+        </q-item>
+         <q-item v-if="chain == 'eth'" clickable @click="menu = 'debts'" :class="[menu == 'debts' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Debts</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+        </q-item>
+         <q-item v-if="chain == 'eth'" clickable @click="menu = 'transactions'" :class="[menu == 'transactions' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Transactions</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+        </q-item>
+        <q-item v-if="chain == 'eth'" clickable @click="menu = 'staking'" :class="[menu == 'staking' ? 'bg-grey-3' : 'bg-white']">
+              <q-item-section>Stake</q-item-section>
+               <q-item-section side><q-icon name="navigate_next"/></q-item-section>
+        </q-item>
+       </q-list>
+
+             <q-expansion-item
+        v-if="accountOption.value"
+            default-opened
+        expand-separator
+        class="bg-white q-py-md"
+        :label="'Total Balance - $'+(accountOption.total ? accountOption.total.toFixed(2) : 0 )"
+        :caption="accountOption.label"
+      >
+        <q-card flat>
+          <q-card-section>
+          <q-select      class="bg-white full-width " @input="getAccountInformation({address:accountOption, chain:accountOption.chain})" v-model="accountOption" :options="accountOptions">
+                    <template v-slot:selected>
+                        <q-item v-if="accountOption">
+
+                            <q-item-section>
+                                <q-item-label >Change account</q-item-label>
+                                <q-item-label caption class="ellipsis mw200 q-pt-xs">{{ accountOption.label }}</q-item-label>
+                            </q-item-section>
+                        </q-item>
+                    </template>
+
+                    <template v-slot:option="scope">
+                  <q-item
+                   class="custom-menu"
+
+                   v-bind="scope.itemProps"
+                   v-on="scope.itemEvents"
+                  >
+                   <q-item-section avatar>
+                    <q-icon
+                     :name="`img:${scope.opt.image}`"
+                    />
+                   </q-item-section>
+                   <q-item-section>
+                    <q-item-label
+                     v-html="scope.opt.label"
+                    />
+
+                    <q-item-label
+                     v-if="scope.opt.name"
+                     caption
+                     >{{ scope.opt.name }}
+                     </q-item-label>
+                      <q-item-label
+                     v-if="scope.opt.total"
+                     caption
+                     >Balance: ${{ scope.opt.total.toFixed(2)  }}
+                     </q-item-label>
+
+                   </q-item-section>
+                  </q-item>
+                 </template>
+                    <!-- <template v-slot:append>
+                        <q-avatar>
+                            <img src="https://www.volentix.io/statics/icons_svg/svg_logo.svg">
+                        </q-avatar>
+                    </template> -->
+                </q-select>
+
+               <q-item clickable :key="index"  v-for="(token,index) in $store.state.wallets.tokens.filter(o => o.chain ==  chain && (( o.name == accountOption.label && chain == 'eos') || ( o.key.toLowerCase() == accountOption.value.toLowerCase() && chain == 'eth' )))">
+         <q-item-section avatar top>
+          <q-icon  :name="'img:'+token.icon" color="primary" text-color="white" />
+        </q-item-section>
+        <q-item-section>{{token.type.toUpperCase()}}</q-item-section>
+              <q-item-section>${{isNaN(token.usd) ? 0 : token.usd.toFixed(4)}}</q-item-section>
+                </q-item>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+        </q-btn-dropdown>
+
+        </q-tabs>
+      </template>
+
+      <template v-slot:after>
+      <div  class="bg-white" >
+         <div v-show="chain == 'eth'">
+            <LiquidityPoolsTable :rowsPerPage="10"  v-if="menu == 'liquidity'"/>
+             <InvestmentsTable v-else-if="menu == 'investments'"/>
+             <DebtsTable v-else-if="menu == 'debts'"/>
+             <TransactionsTable v-else-if="menu == 'transactions'"/>
+             <InvestmentsOpportunitiesTable v-else-if="menu == 'staking'"/>
+             <Oneinch  v-show="menu == 'swap'" />
+         </div>
+         <div v-show="chain == 'eos'">
+                <TestnetPools v-show="menu == 'liquidity'" />
+                <TestnetInvestments v-show="menu == 'investments'"  />
+                <VolentixLiquidity :showLiquidity="false" v-show="menu == 'swap'" />
+                <VolentixLiquidity :showLiquidity="true" v-show="menu == 'add_liquidity'" />
+        </div>
+
+    </div>
+
+        <q-tab-panels
+          v-model="chain"
+          animated
+          swipeable
+          vertical
+
+        >
+          <q-tab-panel name="eth" class="bg-white" v-if="false">
+            <div class="row" v-if="false">
+             <div v-if="accountOption.chain == 'eth'"  class="col-6 desktop-card-style wallet-snapshot q-mb-md" style="background: url(statics/header_bg.png) no-repeat; background-position: 20% 75%; background-size: 100%;">
                     <div class="flex justify-between items-center q-pt-sm q-pb-sm">
                         <h3 class="text-white q-pl-md">Max DeFi Yield</h3>
                         <div class="text-white q-pr-md amount flex items-center">
@@ -54,69 +246,36 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col col-md-7">
-                <!-- <div class="desktop-card-style current-investments wallet-col q-mb-sm">
-            <h4 class="q-pl-md">Wallet - $5,846.31</h4>
-            <div class="header-table-col row q-pl-md q-pr-lg">
-              <div class="col-3"><h3>Asset</h3></div>
-              <div class="col-3"><h3>Balance</h3></div>
-              <div class="col-3"><h3>Price</h3></div>
-              <div class="col-3"><h3>Value</h3></div>
-            </div>
-            <q-scroll-area :visible="true" class="q-pr-md q-mb-md q-mr-sm" style="height: 125px;">
-              <div v-for="i in 3" :key="i" class="body-table-col border row items-center q-pl-md q-pb-sm q-pt-sm">
-                <div class="col-3 flex items-center">
-                  <span class="imgs q-mr-lg flex items-center">
-                    <img src="statics/coins_icons/eth2.png" class="q-mr-md" alt=""> <span class="pair text-bold">ETH</span>
-                  </span>
+                <div   class="col-6  desktop-card-style yearn-finance q-mb-md" v-if="maxToken && accountOption.chain == 'eth'">
+                    <q-item>
+                        <q-item-section>
+                            <span class="text-h5 text-bold ">
+                                Convert {{maxToken.amount.toFixed(4)}} {{maxToken.type.toUpperCase()}} to {{maxDeFiYield.token}}
+                            </span>
+                        </q-item-section>
+                        <q-item-section>
+                            <h4 class="q-pl-md q-pt-sm q-pb-sm flex justify-between items-center">
+                                <q-icon name="arrow_right_alt" />
+                                <div class="flex justify-between items-center"><img :src="'https://zapper.fi/images/'+maxDeFiYield.token+'-icon.png'" alt=""> <strong>{{maxDeFiYield.toTokenAmount}} <b>{{maxDeFiYield.token}}</b></strong></div>
+                                <q-btn unelevated class="qbtn-download" color="black" text-color="white" label="Confirm" @click="goToExchange()" />
+                            </h4>
+                        </q-item-section>
+                    </q-item>
                 </div>
-                <div class="col col-3"><span>7.1439</span></div>
-                <div class="col col-3"><span>$395.24</span></div>
-                <div class="col col-3"><span>$2,823.58</span></div>
-              </div>
-            </q-scroll-area>
-          </div> -->
+             </div>
 
-                <div class="desktop-card-style current-investments explore-opportunities q-mb-md">
-                    <LiquidityPoolsTable />
-                </div>
-                <div class="desktop-card-style yearn-finance q-mb-md" v-if="maxToken">
-                    <h4 class="q-pl-md q-pt-sm q-pb-sm flex justify-between items-center">
-                        Convert {{parseInt(maxToken.amount)}} {{maxToken.type}} to {{maxDeFiYield.token}}
-                        <q-icon name="arrow_right_alt" />
-                        <div class="flex justify-between items-center"><img :src="'https://zapper.fi/images/'+maxDeFiYield.token+'-icon.png'" alt=""> <strong>{{maxDeFiYield.toTokenAmount}} <b>{{maxDeFiYield.token}}</b></strong></div>
-                        <q-btn unelevated class="qbtn-download q-mr-md" color="black" text-color="white" label="Confirm" @click="goToExchange()" />
-                    </h4>
-                </div>
-            </div>
-            <div class="col col-5 q-pr-md">
-                <div class="desktop-card-style current-investments wallet-col debt-col q-mb-md">
-                    <InvestmentsTable />
-                </div>
-            </div>
-            <div class="col col-7">
-                <div class="desktop-card-style current-investments wallet-col deposits-col q-mb-md">
-                    <TransactionsTable />
-                </div>
-            </div>
+             </q-tab-panel>
+
+        </q-tab-panels>
+      </template>
+
+    </q-splitter>
+  </div>
+
         </div>
-        <div class="row">
-            <div class="col col-7 q-pr-md">
-                <div class="desktop-card-style current-investments wallet-col debt-col q-mb-sm">
-                    <DebtsTable />
-                </div>
-            </div>
-        </div>
-        <q-dialog v-model="openDialog">
-            <AddLiquidityDialog />
-        </q-dialog>
+
     </div>
-    <div v-else class="standard-content">
-        <h2 class="standard-content--title flex justify-center">
-            <q-btn flat unelevated class="btn-align-left" text-color="black" icon="keyboard_backspace" /> Liquidity pool
-        </h2>
-    </div>
+
 </q-page>
 </template>
 
@@ -129,37 +288,53 @@ import {
   osName
 } from 'mobile-device-detect'
 // import TransactionsSection from '../../components/Verto/TransactionsSection'
-import AddLiquidityDialog from '../../components/Verto/Defi/AddLiquidityDialog'
 import {
-  QScrollArea
-} from 'quasar'
+  mapState
+} from 'vuex'
 import LiquidityPoolsTable from '../../components/Verto/Defi/LiquidityPoolsTable'
 import TransactionsTable from '../../components/Verto/Defi/TransactionsTable'
 import InvestmentsTable from '../../components/Verto/Defi/InvestmentsTable'
+// import EosInvestmentsTable from '../../components/Verto/Defi/EosInvestmentsTable'
+import TestnetPools from '../../components/Verto/Defi/TestnetPools'
+import TestnetInvestments from '../../components/Verto/Defi/TestnetInvestments'
+import InvestmentsOpportunitiesTable from '../../components/Verto/Defi/InvestmentsTableOpportunities'
 import DebtsTable from '../../components/Verto/Defi/DebtsTable'
-// let cruxClient
-
+import Oneinch from '../../components/Verto/Exchange/Oneinch'
+import VolentixLiquidity from '../../components/Verto/Exchange/VolentixLiquidity'
 export default {
   components: {
-    QScrollArea,
     // TransactionsSection,
     // desktop components
-    AddLiquidityDialog,
+    Oneinch,
+    VolentixLiquidity,
+    TestnetInvestments,
     LiquidityPoolsTable,
     InvestmentsTable,
+    TestnetPools,
     TransactionsTable,
+    InvestmentsOpportunitiesTable,
     DebtsTable
+    // EosInvestmentsTable
 
   },
   data () {
     return {
       maxDeFiYield: {},
       openDialog: false,
+      tab: 'mails',
+      tab2: 'mails',
+      console: {
+
+      },
+      chain: 'eth',
+      menu: 'liquidity',
+      splitterModel: 20,
+      chooseAccount: true,
       osName: '',
-      accountOptions: [
-        '0xF4dCB9cA53b74e039f5FcFCcD4f0548547a25772', '0x915f86d27e4E4A58E93E59459119fAaF610B5bE1', '0x2C13f9722540a3b0a75Cc641005F4954CC7E8771'
-      ],
-      accountOption: '0xF4dCB9cA53b74e039f5FcFCcD4f0548547a25772',
+      accountOptions: [],
+      accountOption: {
+        chain: ''
+      },
       progressValue: 20,
       openModal: false,
       openModalProgress: false,
@@ -201,6 +376,8 @@ export default {
       },
       unknownError: false,
       ErrorMessage: '',
+      ethWallet: null,
+      eosWallet: null,
       invalidEosName: false,
       currentAccount: {
         selected: false,
@@ -219,6 +396,14 @@ export default {
   },
   beforeDestroy () {
     window.removeEventListener('resize', this.getWindowWidth)
+  },
+  watch: {
+    selectedEOSPool (val) {
+      this.menu = 'liquidity'
+    }
+  },
+  computed: {
+    ...mapState('investment', ['selectedEOSPool'])
   },
   async created () {
     let exchangeNotif = document.querySelector('.exchange-notif')
@@ -240,37 +425,56 @@ export default {
     this.maxToken = this.ethTokens.length ? this.ethTokens.reduce((p, c) => p.usd > c.usd ? p : c) : null
 
     this.goBack = this.fetchCurrentWalletFromState ? `/verto/wallets/${this.params.chainID}/${this.params.tokenID}/${this.params.accountName}` : '/verto/dashboard'
-    // this.from = this.currentAccount.chain !== 'eos' ? this.currentAccount.key : this.currentAccount.name
 
-    /* console.log('this.currentAccount sur la page send', this.currentAccount)
-
-  if (this.currentAccount.privateKey) {
-    this.privateKey.key = this.currentAccount.privateKey
-    this.isPrivateKeyEncrypted = false
-  } else {
-    this.isPrivateKeyEncrypted = true
-  }
-
-  this.cruxKey = await HD.Wallet('crux')
-  // console.log('crux privateKey', this.cruxKey.privateKey)
-  cruxClient = new CruxPay.CruxClient({
-    walletClientName: this.walletClientName,
-    privateKey: this.cruxKey.privateKey
-  })
-
-  await cruxClient.init()
-    */
-
-    let account = {
-      address: '0xF4dCB9cA53b74e039f5FcFCcD4f0548547a25772'
+    let eosWallets = tableData.filter(w => w.chain === 'eos' && w.type === 'eos' && this.accountOptions.push({
+      value: w.name,
+      key: w.key.substring(0, 10) + '...' + w.key.substr(w.key.length - 5),
+      usd: w.usd,
+      chain: 'eos',
+      total: w.total,
+      image: w.icon,
+      label: w.name
+    }))
+    let ethACcounts = tableData.filter(w => w.chain === 'eth' && w.type === 'eth' && this.accountOptions.push({
+      value: w.key,
+      key: w.key.substring(0, 10) + '...' + w.key.substr(w.key.length - 5),
+      chain: 'eth',
+      usd: w.usd,
+      total: w.total,
+      image: w.icon,
+      label: w.key.substring(0, 10) + '...' + w.key.substr(w.key.length - 5)
+    }))
+    if (ethACcounts.length) {
+      this.getMaxDeFiYield()
+      this.ethACcount = ethACcounts[0]
     }
-    this.$store.dispatch('investment/getZapperTokens')
-    this.getAccountInformation(account)
+    if (eosWallets.length) {
+      this.eosACcount = eosWallets[0]
+    }
+
+    if (this.accountOptions.length) {
+      this.accountOption = this.accountOptions[0]
+      this.getAccountInformation(this.accountOption)
+    }
   },
   async mounted () {
-    this.getMaxDeFiYield()
+    console.log(this.$store.state.wallets.tokens)
   },
   methods: {
+    showConsole (data) {
+      console.log(data)
+    },
+    switchChain () {
+      let tabs = ['swap', 'investments', 'liquidity']
+      this.accountOption = this.accountOptions.find(w => w.chain === this.chain)
+      if (this.chain === 'eos') {
+        if (!tabs.includes(this.menu)) {
+          this.menu = 'liquidity'
+        }
+      } else {
+        this.getAccountInformation(this.accountOption)
+      }
+    },
     goToExchange () {
       // console.log('this.depositCoin', this.depositCoin)
       let depositCoin = {
@@ -283,23 +487,23 @@ export default {
         value: this.maxDeFiYield.token.toLowerCase(),
         image: 'https://zapper.fi/images/' + this.maxDeFiYield.token + '-icon.png'
       }
-      this.$router.push({
-        path: '/verto/exchange/:coinToSend/:coinToReceive',
-        name: 'exchange-v3',
-        params: {
-          depositCoin: depositCoin,
-          destinationCoin: destinationCoin
-        }
-      })
+      this.$store.commit('settings/setDex', { dex: 'oneinch', destinationCoin: destinationCoin, depositCoin: depositCoin })
+
+      this.$router.push('/verto/exchange/')
     },
     getWindowWidth () {
       this.screenSize = document.querySelector('#q-app').offsetWidth
     },
     async getAccountInformation (account) {
+      this.chain = account.chain
+      if (account.chain !== 'eth') return
+
+      if (!account) account = { value: this.accountOption.key }
+
       this.$store.commit('investment/setTableLoadingStatus', true)
-      this.$store.commit('investment/resetAccountDetails', account.address)
+      this.$store.commit('investment/resetAccountDetails', account.value)
       this.$store.dispatch('investment/getTransactions', {
-        address: account.address
+        address: account.value
       })
       account.platform = 'uniswap-v2'
       this.$store.dispatch('investment/getInvestments', account)
@@ -359,7 +563,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
 @import "~@/assets/styles/variables.scss";
+
+.q-splitter__panel.q-splitter__after.col {
+    background: white;
+}
+.q-splitter__panel.q-splitter__before {
+    width: 25%;
+}
 
 /deep/ .wallets-wrapper {
     padding-bottom: 0px !important;
@@ -382,13 +594,29 @@ export default {
     padding-bottom: 50px
 }
 
-.desktop-version {
+.desktop-version{
     background: #E7E8E8;
     padding-top: 13vh;
-    padding-left: 12vh;
+    padding-left: 20vh;
     padding-bottom: 50px;
     padding-right: 2%;
-    // height: fit-content;
+    @media screen and (min-width: 768px) {
+      padding-top: 11vh;
+      padding-bottom: 0px;
+    }
+}
+.dark-theme{
+    .desktop-version{
+        background: #04111F;
+        padding-bottom: 8px;
+        min-height: 102vh;
+        overflow: hidden;
+        position: relative;
+        scrollbar-width: 0px;
+        .col-title h4{
+            color: #FFF;
+        }
+    }
 }
 
 .desktop-card-style {
@@ -525,7 +753,7 @@ export default {
     &.yearn-finance {
         img {
             width: 30px;
-            margin-right: 10px;
+            margin-right: 30px;
         }
 
         strong {
@@ -564,12 +792,29 @@ export default {
                 }
             }
         }
+    }
 
-        /deep/ .transaction-section {
-            box-shadow: none;
+    .qbtn-custom {
+        border-radius: 30px;
+        height: 34px;
+        background: #EFF5F9 !important;
 
-            .history-icon {
-                display: none;
+        /deep/ .q-btn__wrapper {
+            min-height: unset;
+            padding: 0px 0px;
+
+            .q-btn__content {
+                text-transform: initial;
+                font-size: 12px;
+                color: #627797;
+            }
+
+            /deep/ .transaction-section {
+                box-shadow: none;
+
+                .history-icon {
+                    display: none;
+                }
             }
         }
     }
@@ -644,7 +889,7 @@ export default {
         position: relative;
         line-height: 50px;
         font-family: $Titillium;
-        margin-top: -10px;
+        margin-top: 0px;
         margin-bottom: 10px;
     }
 }
@@ -775,46 +1020,6 @@ export default {
                 }
             }
 
-            .select-input {
-                border-radius: 100px !important;
-                $height: 50px;
-                height: $height;
-
-                /deep/ .q-field__marginal {
-                    height: $height;
-                    min-height: unset;
-                }
-
-                /deep/ .q-field__control {
-                    height: $height;
-                    min-height: unset;
-
-                    .q-field__native {
-                        padding-left: 0px;
-                        padding-top: 0px;
-                        padding-bottom: 0px;
-                        height: $height;
-                        min-height: unset;
-
-                        .q-item {
-                            padding: 0px;
-                            padding-left: 18px;
-                            min-height: $height;
-                            padding-bottom: 0px;
-
-                            .q-item__section {
-                                padding-right: 0px;
-                                min-width: 36px;
-
-                                .q-item__label+.q-item__label {
-                                    margin-top: 0px;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
             .lab-input {
                 font-family: $Titillium;
                 font-weight: $regular;
@@ -869,6 +1074,58 @@ export default {
             // }
         }
 
+    }
+}
+
+.select-input {
+    border-radius: 100px !important;
+    $height: 50px;
+    height: $height;
+    margin-top: -10px;
+
+    // .ellipsis{
+    //     /deep/ .q-field__native {
+    //         max-width: 100px;
+    //     }
+    // }
+    // .mw200{
+    //     /deep/ .q-field__native {
+    //         max-width: 100px;
+    //     }
+    // }
+    /deep/ .q-field__marginal {
+        height: $height;
+        min-height: unset;
+    }
+
+    /deep/ .q-field__control {
+        height: $height;
+        min-height: unset;
+        background-color: #fff !important;
+
+        .q-field__native {
+            padding-left: 0px;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            height: $height;
+            min-height: unset;
+
+            .q-item {
+                padding: 0px;
+                padding-left: 10px;
+                min-height: $height;
+                padding-bottom: 0px;
+
+                .q-item__section {
+                    padding-right: 0px;
+                    min-width: 36px;
+
+                    .q-item__label+.q-item__label {
+                        margin-top: 0px;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -999,5 +1256,9 @@ export default {
 
 /deep/ .q-btn__wrapper {
     min-height: 30px !important;
+}
+
+.text-h5 {
+    font-size: 16px;
 }
 </style>

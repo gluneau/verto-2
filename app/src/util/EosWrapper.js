@@ -1,6 +1,8 @@
 const { Api, JsonRpc } = require('eosjs') // { Api, JsonRpc, RpcError }
 const { JsSignatureProvider } = require('eosjs/dist/eosjs-jssig')
 // const { TextEncoder, TextDecoder } = require('text-encoding')
+import { userError } from '@/util/errorHandler'
+import { userResult } from '@/util/resultHandler'
 import store from '@/store'
 
 // const floatRegex = /[^\d.-]/g
@@ -40,7 +42,7 @@ class EosWrapper {
 
   // If you look at the result value, you can see an array in the form of a string.
   // This is because there could be tokens with many different symbols in the account
-  async getCurrencyBalanceP (account, code = 'eosio.token', symbol = 'VTX') {
+  async getCurrencyBalanceP (account, code = 'eosio.token', symbol = 'eos') {
     let balance = await this.rpc.get_currency_balance(code, account, symbol)
     return balance
   }
@@ -109,6 +111,38 @@ class EosWrapper {
 
     // console.log('transact', result)
     return result
+  }
+
+  async transaction (contractAccount, action, authActor, data, successMessage, errorMessage, api) {
+    try {
+      const result = await api.transact(
+        {
+          actions: [
+            {
+              account: contractAccount,
+              name: action,
+              authorization: [
+                {
+                  actor: authActor,
+                  permission: 'active'
+                }
+              ],
+              data: data
+            }
+          ]
+        },
+        {
+          blocksBehind: 3,
+          expireSeconds: 30
+        }
+      )
+      userResult(successMessage, result)
+    } catch (error) {
+      userError(error, errorMessage)
+      if (error.message.includes('unable to complete by deadline')) {
+        userError('Try at a later time when EOSIO network is not as busy or get more CPU.', 'Vote action')
+      }
+    }
   }
 }
 

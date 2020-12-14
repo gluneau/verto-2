@@ -50,8 +50,8 @@ export default function (/* { store, ssrContext } */) {
     } else if (to.matched.some(record => record.meta.authRequired)) {
       if (!store.state.currentwallet || store.state.currentwallet.loggedIn === false) {
         next({
-          path: '/login',
-          params: { nextUrl: to.fullPath }
+          name: 'login',
+          params: { nextUrl: to.path }
         })
       } else {
         next()

@@ -4,12 +4,12 @@
       <div class="send-modal__content column flex-center">
         <div class="send-modal__content--head">
           <span class="text-h5 --amount">Private key password</span>
-          <q-btn color="white" rounded flat unelevated @click="hideModalFun()" class="close-btn" text-color="black" label="+" />
+          <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black' : 'white'" rounded flat unelevated @click="hideModalFun()" class="close-btn" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white' : 'black'" label="+" />
         </div>
         <div class="send-modal__content--body column flex-center full-width">
           <q-input
             v-model="privateKeyPassword"
-            light
+            :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
             rounded
             outlined
             class="full-width"
@@ -46,7 +46,7 @@
       <div class="send-modal__content column flex-center">
         <div class="send-modal__content--head">
           <span class="text-h5 --amount">{{sendAmount + ' ' + currentAccount.type.toUpperCase()}}</span>
-          <q-btn color="white" rounded flat unelevated @click="hideModalFun()" class="close-btn" text-color="black" label="+" />
+          <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black' : 'white'" rounded flat unelevated @click="hideModalFun()" class="close-btn" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white' : 'black'" label="+" />
         </div>
         <div class="send-modal__content--body column flex-center">
           <q-circular-progress
@@ -66,7 +66,7 @@
       </div>
     </div>
     <q-dialog v-model="transSuccessDialog">
-      <q-card class="q-pa-lg" style="width: 700px; max-width: 90vw;">
+      <q-card class="q-pa-lg" style="width: 700px; max-width: 90vw;" :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'">
         <q-toolbar>
           <q-avatar><q-icon name="done_all" size="md" color="green" /></q-avatar>
           <q-toolbar-title><span class="text-weight-bold">Success</span></q-toolbar-title>
@@ -74,7 +74,7 @@
         </q-toolbar>
         <q-card-section class="text-h6">
           <div class="text-h6 q-mb-md q-pl-sm">Transaction done Successfully.</div>
-          <q-input readonly class="input-input" rounded outlined color="purple" v-model="transactionLink">
+          <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" readonly class="input-input" rounded outlined color="purple" v-model="transactionLink">
             <template v-slot:append>
               <div class="flex justify-end">
                 <q-btn flat unelevated @click="copyToClipboard(transactionLink , 'Transaction link')" text-color="grey" round class="btn-copy" icon="o_file_copy" />
@@ -88,7 +88,7 @@
       </q-card>
     </q-dialog>
     <q-dialog v-model="transErrorDialog">
-      <q-card class="q-pa-lg">
+      <q-card :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" class="q-pa-lg">
         <q-toolbar>
           <q-avatar><q-icon name="error_outline" size="md" color="red" /></q-avatar>
           <q-toolbar-title><span class="text-weight-bold">Error</span></q-toolbar-title>
@@ -100,178 +100,181 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
-
-    <div class="desktop-version" v-if="screenSize > 1024">
-      <div class="row">
-        <div class="col col-md-3">
-          <div class="wallets-container">
-            <profile-header :isMobile="false" class="marg" version="type2222" />
-            <wallets :isMobile="false" :showWallets="false" :isWalletsPage="false" :isWalletDetail="false" />
-            <!-- <img src="statics/prototype_screens/wallets.jpg" alt=""> -->
+    <div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+      <div class="desktop-version" v-if="screenSize > 1024">
+        <div class="row">
+          <div class="col col-md-3">
+            <div class="wallets-container">
+              <profile-header :isMobile="false" class="marg" version="type2222" />
+              <wallets :isMobile="false" :showWallets="false" :isWalletsPage="false" :isWalletDetail="false" />
+              <!-- <img src="statics/prototype_screens/wallets.jpg" alt=""> -->
+            </div>
           </div>
-        </div>
-        <div class="col col-md-9">
-          <div class="desktop-card-style apps-section q-mb-sm">
-            <div class="standard-content">
-              <h2 class="standard-content--title flex justify-start items-center">Send <img :src="currentToken.image" class="max40 q-ml-sm" alt=""></h2>
-              <div class="standard-content--body">
-                <div class="standard-content--body__form">
-                  <div class="row">
-                    <div class="col col-8 q-pr-lg">
-                      <span class="lab-input">From</span>
-                      <q-select
-                          light
-                          separator
-                          rounded
-                          outlined
-                          class="select-input"
-                          v-model="currentToken"
-                          :options="options"
-                      >
-                        <template v-slot:option="scope">
-                          <q-item
-                            class="custom-menu"
-                            v-bind="scope.itemProps"
-                            v-on="scope.itemEvents"
-                          >
-                            <q-item-section avatar>
-                              <q-icon class="option--avatar" :name="`img:${scope.opt.image}`" />
-                            </q-item-section>
-                            <q-item-section dark>
-                              <q-item-label v-html="scope.opt.label" />
-                              <q-item-label caption class="ellipsis mw200">{{ scope.opt.value }}</q-item-label>
-                            </q-item-section>
-                          </q-item>
-                        </template>
-                        <template v-slot:selected>
-                          <q-item
-                            v-if="currentToken"
-                          >
-                            <q-item-section avatar>
-                              <q-icon class="option--avatar" :name="`img:${currentToken.image}`" />
-                            </q-item-section>
-                            <q-item-section>
-                              <q-item-label v-html="currentToken.label" />
-                              <q-item-label caption class="ellipsis mw200">{{ currentToken.value }}</q-item-label>
-                            </q-item-section>
-                          </q-item>
-                          <q-item
-                            v-else>
-                          </q-item>
-                        </template>
-                      </q-select>
-                      <!-- <q-input v-model="from" rounded class="input-input pr80" outlined color="purple" type="text" :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? 'Current ' + currentAccount.type.toUpperCase() + ' Address' : 'Current ' + currentAccount.type.toUpperCase() + ' Account'">
-                        <template v-slot:append>
-                          <div class="flex justify-end">
-                            <q-btn flat unelevated text-color="grey" @click="copyToClipboard(from , 'Address')" round class="btn-copy" icon="o_file_copy" />
-                          </div>
-                        </template>
-                      </q-input> -->
+          <div class="col col-md-9">
+            <div class="desktop-card-style apps-section q-mb-sm" :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
+              <div class="standard-content">
+                <h2 class="standard-content--title flex justify-start items-center">Send <img :src="currentToken.image" class="max40 q-ml-sm" alt=""></h2>
+                <div class="standard-content--body">
+                  <div class="standard-content--body__form">
+                    <div class="row">
+                      <div class="col col-8 q-pr-lg">
+                        <span class="lab-input">From</span>
+                        <q-select
+                            :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                            separator
+                            rounded
+                            outlined
+                            class="select-input"
+                            v-model="currentToken"
+                            :options="options"
+                        >
+                          <template v-slot:option="scope">
+                            <q-item
+                              class="custom-menu"
+                              v-bind="scope.itemProps"
+                              v-on="scope.itemEvents"
+                            >
+                              <q-item-section avatar>
+                                <q-icon class="option--avatar" :name="`img:${scope.opt.image}`" />
+                              </q-item-section>
+                              <q-item-section dark>
+                                <q-item-label v-html="scope.opt.label" />
+                                <q-item-label caption class="ellipsis mw200">{{ scope.opt.value }}</q-item-label>
+                              </q-item-section>
+                            </q-item>
+                          </template>
+                          <template v-slot:selected>
+                            <q-item
+                              v-if="currentToken"
+                            >
+                              <q-item-section avatar>
+                                <q-icon class="option--avatar" :name="`img:${currentToken.image}`" />
+                              </q-item-section>
+                              <q-item-section>
+                                <q-item-label v-html="currentToken.label" />
+                                <q-item-label caption class="ellipsis mw200">{{ currentToken.value }}</q-item-label>
+                              </q-item-section>
+                            </q-item>
+                            <q-item
+                              v-else>
+                            </q-item>
+                          </template>
+                        </q-select>
+                        <!-- <q-input v-model="from" rounded class="input-input pr80" outlined color="purple" type="text" :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? 'Current ' + currentAccount.type.toUpperCase() + ' Address' : 'Current ' + currentAccount.type.toUpperCase() + ' Account'">
+                          <template v-slot:append>
+                            <div class="flex justify-end">
+                              <q-btn flat unelevated text-color="grey" @click="copyToClipboard(from , 'Address')" round class="btn-copy" icon="o_file_copy" />
+                            </div>
+                          </template>
+                        </q-input> -->
+                      </div>
+                      <div class="col col-4">
+                        <span class="lab-input">Amount</span>
+                        <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-model="sendAmount" class="input-input" rounded outlined color="purple" type="number">
+                          <template v-slot:append>
+                            <div class="flex justify-end">
+                              <span class="tokenID">{{ currentToken.type }}</span>
+                              <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black' : 'white'" rounded class="mt-5" @click="getMaxBalance()" outlined unelevated flat :text-color="$store.state.lightMode.lightMode === 'true' ? 'white' : 'black'" label="Max" />
+                            </div>
+                          </template>
+                        </q-input>
+                      </div>
                     </div>
-                    <div class="col col-4">
-                      <span class="lab-input">Amount</span>
-                      <q-input v-model="sendAmount" class="input-input" rounded outlined color="purple" type="number">
-                        <template v-slot:append>
-                          <div class="flex justify-end">
-                            <span class="tokenID">{{ currentToken.type }}</span>
-                            <q-btn color="white" rounded class="mt-5" @click="getMaxBalance()" outlined unelevated flat text-color="black" label="Max" />
-                          </div>
-                        </template>
-                      </q-input>
+                    <div class="row">
+                      <div class="col col-12">
+                        <span class="lab-input">To</span>
+                        <q-input
+                          :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+                          ref="sendTo"
+                          v-model="sendTo"
+                          @input="checkTo()"
+                          class="input-input pr80" outlined rounded color="purple"
+                          type="text"
+                          bottom-slots
+                          :error="toError"
+                          :error-message="toErrorMessage"
+                          :label="currentAccount.chain.toUpperCase() + ' Address'"
+                        >
+                          <template v-slot:append>
+                            <div class="flex justify-end">
+                              <!-- <q-btn flat unelevated round class="btn-copy"><span class="qr-btn"><img src="statics/qr-icon.png" alt=""></span> </q-btn> -->
+                              <q-btn flat unelevated @click="copyToClipboard(sendTo , 'Address')" text-color="grey" round class="btn-copy" icon="o_file_copy" />
+                            </div>
+                          </template>
+                        </q-input>
+                      </div>
+                      <div class="col col-12">
+                        <span class="lab-input">Memo</span>
+                        <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" ref="sendMemo" v-model="sendMemo" @input="checkMemo" :error="memoError" error-message="Memo is required on this exchange, check your deposit instructions" rounded outlined class="" color="purple" type="textarea"/>
+                      </div>
                     </div>
                   </div>
-                  <div class="row">
-                    <div class="col col-12">
-                      <span class="lab-input">To</span>
-                      <q-input
-                        ref="sendTo"
-                        v-model="sendTo"
-                        @input="checkTo()"
-                        class="input-input pr80" outlined rounded color="purple"
-                        type="text"
-                        bottom-slots
-                        :error="toError"
-                        :error-message="toErrorMessage"
-                        :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? currentAccount.type.toUpperCase() + ' Address' : 'Account name'"
-                      >
-                        <template v-slot:append>
-                          <div class="flex justify-end">
-                            <!-- <q-btn flat unelevated round class="btn-copy"><span class="qr-btn"><img src="statics/qr-icon.png" alt=""></span> </q-btn> -->
-                            <q-btn flat unelevated @click="copyToClipboard(sendTo , 'Address')" text-color="grey" round class="btn-copy" icon="o_file_copy" />
-                          </div>
-                        </template>
-                      </q-input>
-                    </div>
-                    <div class="col col-12">
-                      <span class="lab-input">Memo</span>
-                      <q-input ref="sendMemo" v-model="sendMemo" @input="checkMemo" :error="memoError" error-message="Memo is required on this exchange, check your deposit instructions" rounded outlined class="" color="purple" type="textarea"/>
-                    </div>
-                  </div>
+                  <br>
                 </div>
-                <br>
-              </div>
-              <div class="standard-content--footer">
-                <q-btn flat class="action-link next" color="black" @click="openModalFun()" text-color="white" :disable="!sendToResolved" label="Transfer" />
+                <div class="standard-content--footer">
+                  <q-btn flat class="action-link next" color="black" @click="openModalFun()" text-color="white" :disable="!sendToResolved" label="Transfer" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div v-else class="standard-content">
-      <h2 class="standard-content--title flex justify-center"><q-btn flat unelevated class="btn-align-left" :to="goBack" text-color="black" icon="keyboard_backspace" /> Send </h2>
-      <div class="standard-content--body">
-        <div class="standard-content--body__form">
-          <span class="lab-input">From</span>
-          <q-input v-model="from" rounded class="input-input pr80" outlined color="purple" type="text" :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? 'Current ' + currentAccount.type.toUpperCase() + ' Address' : 'Current ' + currentAccount.type.toUpperCase() + ' Account'">
-            <template v-slot:append>
-              <div class="flex justify-end">
-                <q-btn flat unelevated text-color="grey" @click="copyToClipboard(from , 'Address')" round class="btn-copy" icon="o_file_copy" />
-              </div>
-            </template>
-          </q-input>
-          <span class="lab-input">Amount</span>
-          <q-input v-model="sendAmount" class="input-input" rounded outlined color="purple" type="number">
-            <template v-slot:append>
-              <div class="flex justify-end">
-                <span class="tokenID">{{ params.tokenID }}</span>
-                <q-btn color="white" rounded class="mt-5" @click="getMaxBalance()" outlined unelevated flat text-color="black" label="Max" />
-               </div>
-            </template>
-          </q-input>
+      <div v-else class="standard-content mobile-version">
+        <h2 class="standard-content--title flex justify-center"><q-btn flat unelevated class="btn-align-left" :to="goBack" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white':'black'" icon="keyboard_backspace" /> Send </h2>
+        <div class="standard-content--body">
+          <div class="standard-content--body__form">
+            <span class="lab-input">From</span>
+            <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-model="from" rounded class="input-input pr80" outlined color="purple" type="text" :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? 'Current ' + currentAccount.type.toUpperCase() + ' Address' : 'Current ' + currentAccount.type.toUpperCase() + ' Account'">
+              <template v-slot:append>
+                <div class="flex justify-end">
+                  <q-btn flat unelevated text-color="grey" @click="copyToClipboard(from , 'Address')" round class="btn-copy" icon="o_file_copy" />
+                </div>
+              </template>
+            </q-input>
+            <span class="lab-input">Amount</span>
+            <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" v-model="sendAmount" class="input-input" rounded outlined color="purple" type="number">
+              <template v-slot:append>
+                <div class="flex justify-end">
+                  <span class="tokenID">{{ params.tokenID }}</span>
+                  <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black' : 'white'" rounded class="mt-5" @click="getMaxBalance()" outlined unelevated flat text-color="black" label="Max" />
+                </div>
+              </template>
+            </q-input>
 
-          <span class="lab-input">To</span>
-          <q-input
-            ref="sendTo"
-            v-model="sendTo"
-            @input="checkTo()"
-            class="input-input pr80" outlined rounded color="purple"
-            type="text"
-            bottom-slots
-            :error="toError"
-            :error-message="toErrorMessage"
-            :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? currentAccount.type.toUpperCase() + ' Address' : 'Account name'"
-          >
-            <template v-slot:append>
-              <div class="flex justify-end">
-                <!-- <q-btn flat unelevated round class="btn-copy"><span class="qr-btn"><img src="statics/qr-icon.png" alt=""></span> </q-btn> -->
-                <q-btn flat unelevated @click="copyToClipboard(sendTo , 'Address')" text-color="grey" round class="btn-copy" icon="o_file_copy" />
-              </div>
-            </template>
-          </q-input>
+            <span class="lab-input">To</span>
+            <q-input
+              :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'"
+              ref="sendTo"
+              v-model="sendTo"
+              @input="checkTo()"
+              class="input-input pr80" outlined rounded color="purple"
+              type="text"
+              bottom-slots
+              :error="toError"
+              :error-message="toErrorMessage"
+              :label="(currentAccount.type !== 'eos' && currentAccount.type !== 'verto') ? currentAccount.type.toUpperCase() + ' Address' : 'Account name'"
+            >
+              <template v-slot:append>
+                <div class="flex justify-end">
+                  <!-- <q-btn flat unelevated round class="btn-copy"><span class="qr-btn"><img src="statics/qr-icon.png" alt=""></span> </q-btn> -->
+                  <q-btn flat unelevated @click="copyToClipboard(sendTo , 'Address')" text-color="grey" round class="btn-copy" icon="o_file_copy" />
+                </div>
+              </template>
+            </q-input>
 
-          <span class="lab-input">Memo</span>
-          <q-input ref="sendMemo" v-model="sendMemo" @input="checkMemo" :error="memoError" error-message="Memo is required on this exchange, check your deposit instructions" rounded outlined class="" color="purple" type="textarea"/>
+            <span class="lab-input">Memo</span>
+            <q-input :dark="$store.state.lightMode.lightMode === 'true'" :light="$store.state.lightMode.lightMode === 'false'" ref="sendMemo" v-model="sendMemo" @input="checkMemo" :error="memoError" error-message="Memo is required on this exchange, check your deposit instructions" rounded outlined class="" color="purple" type="textarea"/>
 
+          </div>
+          <br>
+          <!-- <div class="total-fee flex justify-between">
+            <span class="label">Total Fee</span>
+            <span class="value">0.03254 {{ params.tokenID }}</span>
+          </div> -->
         </div>
-        <br>
-        <!-- <div class="total-fee flex justify-between">
-          <span class="label">Total Fee</span>
-          <span class="value">0.03254 {{ params.tokenID }}</span>
-        </div> -->
-      </div>
-      <div class="standard-content--footer">
-         <q-btn flat class="action-link next" color="black" @click="openModalFun()" text-color="white" :disable="!sendToResolved" label="Transfer" />
+        <div class="standard-content--footer">
+          <q-btn flat class="action-link next" color="black" @click="openModalFun()" text-color="white" :disable="!sendToResolved" label="Transfer" />
+        </div>
       </div>
     </div>
   </q-page>
@@ -307,6 +310,7 @@ export default {
       transStatus: 'Sent Successfully',
       currentWallet: null,
       sendTo: '',
+      screenSize: 1024,
       to: '',
       goBack: '',
       fetchCurrentWalletFromState: true,
@@ -323,7 +327,9 @@ export default {
       chainID: '',
       tokenID: '',
       accountName: '',
-      params: null,
+      params: {
+        tokenID: ''
+      },
       getPassword: false,
       walletClientName: 'verto', // should be 'verto' when in prod
       cruxKey: {},
@@ -363,23 +369,36 @@ export default {
   },
   watch: {
     currentToken: function (newVal) {
-      this.from = newVal.label
-      this.currentAccount = this.tableData.find(w => w.chain === newVal.chainID && w.type === newVal.type && (
-        w.chain === 'eos' ? w.name.toLowerCase() === newVal.label : w.key === newVal.label)
-      )
-      this.$store.state.currentwallet.wallet = this.currentAccount
-      this.sendAmount = 0
+      if (newVal) {
+        /*
+        this.from = newVal.label
+        this.currentAccount = this.tableData.find(w => w.chain === newVal.chainID && w.type === newVal.type && (
+          w.chain === 'eos' ? w.name.toLowerCase() === newVal.label : w.key === newVal.label)
+        )
+        */
+
+        // this.$store.commit('currentwallet/updateCurrentWallet', this.currentAccount)
+        this.sendAmount = 0
+      }
     }
   },
   async created () {
+    this.tableData = await this.$store.state.wallets.tokens
+
+    if (this.$route.params.chainID && this.$route.params.chainID) {
+      this.params = {
+        chainID: this.$route.params.chainID,
+        tokenID: this.$route.params.tokenID,
+        accountName: this.$route.params.accountName
+      }
+      this.$store.commit('currentwallet/updateParams', this.params)
+      this.$store.state.currentwallet.wallet = this.getCurrentWallet()
+    }
     let exchangeNotif = document.querySelector('.exchange-notif'); if (exchangeNotif !== null) { exchangeNotif.querySelector('.q-btn').dispatchEvent(new Event('click')) }
     this.osName = osName
     this.getWindowWidth()
     window.addEventListener('resize', this.getWindowWidth)
-    // console.log('this.osName', this.osName)
-    this.params = this.$store.state.currentwallet.params
-    this.tableData = await this.$store.state.wallets.tokens
-    // console.log('this.tableData', this.tableData)
+
     let self = this
     this.tableData.map(token => {
       if (!token.disabled && token.type.toLowerCase() !== 'verto' && parseFloat(token.amount) > 0) {
@@ -393,6 +412,7 @@ export default {
         })
       }
     })
+
     if (this.selectedCoin) {
       this.currentAccount = this.selectedCoin
       this.currentToken = {
@@ -404,10 +424,9 @@ export default {
         amount: this.selectedCoin.amount
       }
     } else {
-      this.currentAccount = this.tableData.find(w => w.chain === this.params.chainID && w.type === this.params.tokenID && (
-        w.chain === 'eos' ? w.name.toLowerCase() === this.params.accountName : w.key === this.params.accountName)
-      )
+      this.currentAccount = this.getCurrentWallet()
     }
+
     this.currentAccount = this.currentAccount || this.currentToken
     if (this.params.chainID === undefined) {
       this.params = {
@@ -416,13 +435,11 @@ export default {
         accountName: this.currentAccount.name
       }
     }
-    // console.log('this.params', this.params.chainID)
+
     if (this.currentAccount !== undefined) {
       this.goBack = this.fetchCurrentWalletFromState ? `/verto/wallets/${this.params.chainID}/${this.params.tokenID}/${this.params.accountName}` : '/verto/dashboard'
       this.from = this.currentAccount.chain !== 'eos' ? this.currentAccount.key : this.currentAccount.name
     }
-
-    // console.log('this.currentAccount sur la page send', this.currentAccount)
 
     if (this.currentAccount.privateKey) {
       this.privateKey.key = this.currentAccount.privateKey
@@ -432,7 +449,7 @@ export default {
     }
 
     this.cruxKey = await HD.Wallet('crux')
-    // console.log('crux privateKey', this.cruxKey.privateKey)
+
     cruxClient = new CruxPay.CruxClient({
       walletClientName: this.walletClientName,
       privateKey: this.cruxKey.privateKey
@@ -442,6 +459,11 @@ export default {
   mounted () {
   },
   methods: {
+    getCurrentWallet () {
+      return this.tableData.find(w => w.chain === this.params.chainID && w.type === this.params.tokenID && (
+        w.chain === 'eos' ? w.name.toLowerCase() === this.params.accountName : true)
+      )
+    },
     getWindowWidth () {
       this.screenSize = document.querySelector('#q-app').offsetWidth
     },
@@ -539,11 +561,12 @@ export default {
       // 'memo', this.sendMemo,
       // 'key', this.privateKey.key,
       // 'contract', this.currentAccount.contract)
+      console.log('this.currentAccount', this.currentAccount)
 
       Lib.send(
         this.currentAccount.chain,
         this.currentAccount.type,
-        this.currentAccount.name,
+        this.currentAccount.chain !== 'eos' ? this.currentAccount.key : this.currentAccount.name,
         this.sendToResolved,
         this.sendAmount,
         this.sendMemo,
@@ -613,15 +636,53 @@ export default {
       }
     }
   }
-  .mobile-pad{
-    padding-bottom: 50px
+  .mobile-pad {
+    padding-bottom: 50px;
+    background: #FFF !important;
   }
   .desktop-version{
     background: #E7E8E8;
     padding-top: 13vh;
-    padding-left: 12vh;
+    padding-left: 20vh;
     padding-bottom: 50px;
     padding-right: 2%;
+    @media screen and (min-width: 768px) {
+      padding-top: 11vh;
+      padding-bottom: 0px;
+    }
+  }
+  .dark-theme{
+    .mobile-version{
+      background: #04111F;
+      .standard-content--title{
+        color: #FFF;
+      }
+      .standard-content--body__form .lab-input{
+        color: #FFF;
+      }
+      .standard-content--body__form .input-input{
+        /deep/ button{
+          color: #FFF !important;
+        }
+      }
+    }
+    .desktop-version{
+      background: #04111F;
+      padding-bottom: 8px;
+      min-height: 102vh;
+      overflow: hidden;
+      position: relative;
+      scrollbar-width: 0px;
+      .col-title h4{
+          color: #FFF;
+      }
+      .standard-content--body__form .lab-input{
+        color: #FFF;
+      }
+    }
+    .standard-content--body__form .select-input .q-field__control .q-field__native .q-item .q-item__section .q-item__label + .q-item__label{
+      color: #CCC;
+    }
   }
   .desktop-card-style{
     height: 100%;
@@ -685,11 +746,11 @@ export default {
       &__form{
         .tokenID{
           text-transform: uppercase;
-          font-size: 20px;
-          font-weight: 900;
+          font-size: 16px;
+          font-weight: 700;
           color: #7271fa;
           padding-top: 0px;
-          margin-top: -5px;
+          margin-top: -1px;
         }
         /deep/ .q-field__native{
           padding-left: 8px;

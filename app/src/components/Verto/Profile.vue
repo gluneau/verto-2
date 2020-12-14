@@ -1,18 +1,22 @@
+
 <template>
-<div>
+<div :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
   <div class="profile-wrapper">
     <!-- <q-toggle v-model="active" label="Active" /> -->
     <div class="profile-wrapper--list">
-      <q-list bordered separator>
+      <q-list :dark="$store.state.lightMode.lightMode === 'true'" bordered separator>
         <q-item v-for="(item, index) in menu" :key="index" clickable v-ripple :active="active" :to="(item.to !== 'backup' && item.to !== 'logout' && item.to !== 'restore' && item.to !== 'share') ? item.to : ''" @click="item.to === 'backup' ? backupConfig() : item.to === 'logout' ? logout() : item.to === 'restore' ? startRestoreConfig() : item.to === 'share' ? toggleShare() : empty()">
           <q-item-section avatar>
             <q-icon class="icons" :class="{'reverse' : item.icon === 'exit_to_app'}" v-if="item.icon !== 'vtx'" :name="item.icon" />
-            <img v-else class="vtx_logo" width="15px" src="statics/vtx_black.svg" alt="">
+            <img v-else class="vtx_logo" width="15px" :src="$store.state.lightMode.lightMode === 'true' ? 'statics/vtx.png' : 'statics/vtx_black.svg'" alt="">
           </q-item-section>
-          <q-item-section class="item-name">{{item.name}}</q-item-section>
+          <q-item-section class="item-name">
+            <div>{{item.name}}</div>
+            <div v-if="screenSize <= 1024 && item.info === 'Linked'" class="flex flex-center q-mr-md text-grey">{{existingCruxID}}</div>
+          </q-item-section>
           <q-item-section>
             <div class="flex justify-end">
-              <div v-if="item.info === 'Linked'" class="flex flex-center q-mr-md text-grey">{{existingCruxID}}</div>
+              <div v-if="screenSize > 1024 && item.info === 'Linked'" class="flex flex-center q-mr-md text-grey">{{existingCruxID}}</div>
               <q-btn v-if="item.info === 'Linked'" flat unelevated text-color="grey" @click="copyToClipboard(existingCruxID , 'Verto ID')" round class="btn-copy" icon="o_file_copy" />
             </div>
           </q-item-section>
@@ -22,7 +26,7 @@
     </div>
   </div>
   <q-dialog v-model="showShareWrapper">
-    <q-card class="q-pa-lg">
+    <q-card :dark="$store.state.lightMode.lightMode === 'true'" class="q-pa-lg" :class="{'dark-theme': $store.state.lightMode.lightMode === 'true'}">
       <q-toolbar>
         <q-avatar><img src="statics/icon.png"></q-avatar>
         <q-toolbar-title><span class="text-weight-bold">Share</span> VERTO</q-toolbar-title>
@@ -138,7 +142,7 @@
               </social-sharing>
             </span>
             <div id="copy-btn">
-              <q-btn color="white" text-color="black" @click="copyToClipboard(vertoLink , 'Link')" class="copy-link-button" flat label="Copy link">
+              <q-btn :color="$store.state.lightMode.lightMode === 'true' ? 'black':'white'" :text-color="$store.state.lightMode.lightMode === 'true' ? 'white':'black'" @click="copyToClipboard(vertoLink , 'Link')" class="copy-link-button" flat label="Copy link">
                 <img src="/statics/social/copy.svg" alt="">
               </q-btn>
             </div>
@@ -209,6 +213,8 @@ export default {
       { name: 'Personalize your wallet', to: '', icon: 'o_perm_media', info: 'soon' },
       { name: 'Backup Config', to: 'backup', icon: 'o_get_app', info: '' },
       { name: 'Restore Config', to: 'restore', icon: 'cloud_upload', info: '' },
+      { name: 'Add EOS Account', to: '/verto/import-private-key/eos', icon: 'label', info: '' },
+      { name: 'Add ETH Account', to: '/verto/import-private-key/eth', icon: 'label', info: '' },
       { name: 'Change Password', to: '/verto/profile/change-password', icon: 'lock_open', info: '' },
       { name: 'Link to Verto ID', to: '', icon: 'vtx', info: 'Linked' },
       { name: 'share Verto wallet', to: 'share', icon: 'share', info: '' },
@@ -319,6 +325,15 @@ export default {
       .item-name{
         font-size: 16px;
       }
+    }
+  }
+  .dark-theme{
+    &.q-card{
+      border: 1px solid #627797;
+    }
+    /deep/ .copy-link-button{
+      background-color: #04111F;
+      border: 1px solid #627797;
     }
   }
   .icon-alert{
