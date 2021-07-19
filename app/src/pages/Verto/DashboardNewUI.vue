@@ -19,12 +19,14 @@
         :class="{'text-white': $store.state.settings.lightMode === 'true'}"
       >
         <q-tab name="dashboard" icon="dashboard" label="Dashboard" />
-         <q-tab name="exchange" icon="swap_horiz" label="Exchange"  @click="show.exchange = true"/>
+        <q-tab name="exchange" icon="swap_horiz" label="Exchange"  @click="show.exchange = true"/>
         <q-tab name="vtxstaking" icon="trending_up" label="VTX Staking" @click="show.vtxstaking = true" />
+        <q-tab name="hexstaking" icon="trending_up" label="HEX Staking" @click="show.hexstaking = true" />
         <q-tab name="tokens" icon="trending_up" label="Token watcher" @click="show.tokens = true"/>
       </q-tabs>
           <GodexV2  v-show="tab == 'exchange'" v-if="show.exchange" />
               <VTXStakeState v-show="tab == 'vtxstaking'"  v-if="show.vtxstaking"   />
+              <HEXStakeState v-show="tab == 'hexstaking'"  v-if="show.hexstaking"   />
               <TokenPrices v-show="tab == 'tokens'" class="full-width" v-if="show.tokens"    />
                 <q-breadcrumbs class="col-12 q-pt-md q-pl-md bg-white breadcrumbs" v-if="assetSelected">
                   <q-breadcrumbs-el  class="cursor-pointer" @click="assetSelected = null" label="Back"  icon="keyboard_backspace" />
@@ -111,6 +113,7 @@ import MakeVTXSection2 from '../../components/Verto/MakeVTXSection2'
 import SingleToken from '../../components/Verto/SingleToken'
 import GodexV2 from '../../components/Verto/Exchange/GodexV2'
 import VTXStakeState from '../../components/Verto/EOS/StakingState'
+import HEXStakeState from '../../components/Verto/ETH/HEXStakingState'
 import AssetsExplorer from '../../components/Verto/Token/AssetsExplorer'
 import TokenPrices from '../../components/Verto/Token/TokenPrices'
 import {
@@ -144,6 +147,7 @@ import {
 export default {
   components: {
     // ConvertAnyCoin,
+    HEXStakeState,
     VTXStakeState,
     MultiTransaction,
     // NftsExplorer,
@@ -184,6 +188,7 @@ export default {
       show: {
         exchange: false,
         tokens: false,
+        hexstaking: false,
         vtxstaking: false
       },
       tabPoolAndAssetBalances: 'asset',
